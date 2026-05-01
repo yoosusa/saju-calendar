@@ -56,14 +56,14 @@
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-color); }
         
-        select, input[type="time"], input[type="text"] {
+        select, input[type="time"], input[type="text"], input[type="date"] {
             width: 100%; padding: 12px; border: 1px solid var(--border-color);
             border-radius: 8px; background-color: #ffffff; font-family: inherit;
             font-size: 1rem; color: var(--text-color); box-sizing: border-box; margin-bottom: 10px;
             transition: border-color 0.2s;
         }
         
-        select:focus, input[type="time"]:focus, input[type="text"]:focus {
+        select:focus, input[type="time"]:focus, input[type="text"]:focus, input[type="date"]:focus {
             outline: none; border-color: var(--accent-color);
         }
 
@@ -90,13 +90,19 @@
         }
         .save-btn:hover { background-color: #f4f8f6; }
 
-        .today-fortune-btn {
-            display: inline-block; padding: 14px 30px;
-            background-color: var(--text-color); color: #ffffff;
+        .action-btn-group {
+            display: flex; gap: 10px; justify-content: center; margin-top: 35px; flex-wrap: wrap;
+        }
+        .action-btn {
+            display: inline-block; padding: 14px 25px; flex: 1; min-width: 200px;
             border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; font-family: inherit;
             cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .today-fortune-btn:hover { background-color: #1f2b25; transform: translateY(-2px); }
+        .today-btn { background-color: var(--text-color); color: #ffffff; }
+        .today-btn:hover { background-color: #1f2b25; transform: translateY(-2px); }
+        
+        .myoun-btn { background-color: var(--accent-color); color: #ffffff; }
+        .myoun-btn:hover { background-color: var(--btn-hover); transform: translateY(-2px); }
 
         .saved-list-section {
             margin-top: 35px; background-color: #ffffff; padding: 20px; 
@@ -131,12 +137,10 @@
             border-top: 2px dashed var(--border-color); text-align: center;
         }
         
-        /* 모바일 최적화를 위해 min-width 제거 및 width 100% 적용 */
         .result-top-flex { display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 20px; width: 100%; }
         .bazi-table-container { width: 60%; }
         .selected-yun-container { width: 40%; display: flex; justify-content: flex-end; gap: 5px; }
         
-        /* 공통 테이블 스타일: table-layout: fixed로 칸 너비 고정 */
         .bazi-table { width: 100%; table-layout: fixed; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border-radius: 8px; overflow: hidden; }
         .yun-table { width: 32%; display: none; }
         .bazi-table th { font-size: 0.9rem; font-weight: 600; color: #666; padding-bottom: 8px; background-color: #fcfdfc; padding-top: 8px; }
@@ -167,7 +171,7 @@
         }
         .yun-container { display: flex; justify-content: space-between; gap: 6px; padding-bottom: 8px; }
         .yun-item {
-            display: flex; flex-direction: column; flex: 1; min-width: 0; /* 모바일 축소를 위해 최소너비 제한 해제 */
+            display: flex; flex-direction: column; flex: 1; min-width: 0; 
             border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden;
             background-color: #ffffff; cursor: pointer; transition: all 0.2s ease;
         }
@@ -177,36 +181,28 @@
         .yun-age { background-color: #f8faf9; font-size: 0.75rem; font-weight: 600; padding: 5px 0; text-align: center; letter-spacing: -0.5px; color: var(--text-color); }
         .yun-item .char-box { padding: 6px 0; font-size: 1.2rem; }
 
-        .today-fortune-section {
+        .result-sub-section {
             display: none; margin-top: 40px; padding-top: 25px;
             border-top: 2px solid var(--accent-color); text-align: center;
         }
-        .today-title { font-size: 1.3rem; font-weight: 700; color: var(--text-color); margin-bottom: 5px; }
+        .section-title { font-size: 1.3rem; font-weight: 700; color: var(--text-color); margin-bottom: 5px; }
         
         .feedback-section { margin-top: 40px; padding: 25px 20px; background-color: #f8faf9; border-radius: 12px; border: 1px solid var(--border-color); text-align: center; }
         .feedback-btn { display: inline-block; padding: 12px 28px; background-color: #ffffff; color: var(--accent-color); text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 1rem; border: 1px solid var(--accent-color); transition: all 0.3s ease; }
         .feedback-btn:hover { background-color: var(--accent-color); color: #ffffff; }
 
-        /* 📱 모바일 디바이스 최적화 (가로 스크롤 제거 및 화면 맞춤) */
         @media (max-width: 600px) {
             .container { padding: 20px 10px; }
             .result-top-flex { gap: 5px; }
-            
-            /* 명식 표 글씨 축소 */
             .char-box { font-size: 1.1rem !important; padding: 5px 0 !important; }
             .shipsin-top, .shipsin-bottom { font-size: 0.65rem !important; padding: 3px 0 !important; letter-spacing: -1px; }
             .bazi-table th { font-size: 0.7rem !important; letter-spacing: -1px; padding: 4px 0; }
             .day-master-text { font-size: 0.7rem !important; }
-            
-            /* 대운/세운 리스트 축소 */
             .yun-container { gap: 2px; }
             .yun-age { font-size: 0.65rem !important; padding: 3px 0 !important; letter-spacing: -1px; }
             .yun-item .char-box { font-size: 0.95rem !important; padding: 4px 0 !important; }
-            
-            /* 오늘의 사주 버튼 크기 조정 */
-            .today-fortune-btn { width: 100%; padding: 12px 15px; font-size: 1rem; }
-            
-            /* 저장 목록 글자 크기 조정 */
+            .action-btn-group { flex-direction: column; }
+            .action-btn { width: 100%; padding: 12px 15px; font-size: 1rem; }
             .saved-name { font-size: 0.95rem; }
             .saved-detail { font-size: 0.7rem; }
         }
@@ -287,40 +283,22 @@
                 <table class="bazi-table yun-table" id="yue-yun-table">
                     <thead><tr><th>월운</th></tr></thead>
                     <tbody>
-                        <tr><td>
-                            <div class="shipsin-top" id="yue-yun-gan-ship">-</div>
-                            <span class="char-box" id="yue-yun-gan">-</span>
-                        </td></tr>
-                        <tr><td>
-                            <span class="char-box" id="yue-yun-zhi">-</span>
-                            <div class="shipsin-bottom" id="yue-yun-zhi-ship">-</div>
-                        </td></tr>
+                        <tr><td><div class="shipsin-top" id="yue-yun-gan-ship">-</div><span class="char-box" id="yue-yun-gan">-</span></td></tr>
+                        <tr><td><span class="char-box" id="yue-yun-zhi">-</span><div class="shipsin-bottom" id="yue-yun-zhi-ship">-</div></td></tr>
                     </tbody>
                 </table>
                 <table class="bazi-table yun-table" id="nian-yun-table">
                     <thead><tr><th>세운</th></tr></thead>
                     <tbody>
-                        <tr><td>
-                            <div class="shipsin-top" id="nian-yun-gan-ship">-</div>
-                            <span class="char-box" id="nian-yun-gan">-</span>
-                        </td></tr>
-                        <tr><td>
-                            <span class="char-box" id="nian-yun-zhi">-</span>
-                            <div class="shipsin-bottom" id="nian-yun-zhi-ship">-</div>
-                        </td></tr>
+                        <tr><td><div class="shipsin-top" id="nian-yun-gan-ship">-</div><span class="char-box" id="nian-yun-gan">-</span></td></tr>
+                        <tr><td><span class="char-box" id="nian-yun-zhi">-</span><div class="shipsin-bottom" id="nian-yun-zhi-ship">-</div></td></tr>
                     </tbody>
                 </table>
                 <table class="bazi-table yun-table" id="da-yun-table">
                     <thead><tr><th>대운</th></tr></thead>
                     <tbody>
-                        <tr><td>
-                            <div class="shipsin-top" id="da-yun-gan-ship">-</div>
-                            <span class="char-box" id="da-yun-gan">-</span>
-                        </td></tr>
-                        <tr><td>
-                            <span class="char-box" id="da-yun-zhi">-</span>
-                            <div class="shipsin-bottom" id="da-yun-zhi-ship">-</div>
-                        </td></tr>
+                        <tr><td><div class="shipsin-top" id="da-yun-gan-ship">-</div><span class="char-box" id="da-yun-gan">-</span></td></tr>
+                        <tr><td><span class="char-box" id="da-yun-zhi">-</span><div class="shipsin-bottom" id="da-yun-zhi-ship">-</div></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -329,48 +307,21 @@
                 <table class="bazi-table">
                     <thead>
                         <tr>
-                            <th>시주(時)</th>
-                            <th>일주(日)</th>
-                            <th>월주(月)</th>
-                            <th>년주(年)</th>
+                            <th>시주(時)</th><th>일주(日)</th><th>월주(月)</th><th>년주(年)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>
-                                <div class="shipsin-top" id="time-gan-ship">-</div>
-                                <span class="char-box" id="time-gan">-</span>
-                            </td>
-                            <td>
-                                <div class="shipsin-top day-master-text" id="day-gan-ship">일간</div>
-                                <span class="char-box" id="day-gan">-</span>
-                            </td>
-                            <td>
-                                <div class="shipsin-top" id="month-gan-ship">-</div>
-                                <span class="char-box" id="month-gan">-</span>
-                            </td>
-                            <td>
-                                <div class="shipsin-top" id="year-gan-ship">-</div>
-                                <span class="char-box" id="year-gan">-</span>
-                            </td>
+                            <td><div class="shipsin-top" id="time-gan-ship">-</div><span class="char-box" id="time-gan">-</span></td>
+                            <td><div class="shipsin-top day-master-text" id="day-gan-ship">일간</div><span class="char-box" id="day-gan">-</span></td>
+                            <td><div class="shipsin-top" id="month-gan-ship">-</div><span class="char-box" id="month-gan">-</span></td>
+                            <td><div class="shipsin-top" id="year-gan-ship">-</div><span class="char-box" id="year-gan">-</span></td>
                         </tr>
                         <tr>
-                            <td>
-                                <span class="char-box" id="time-zhi">-</span>
-                                <div class="shipsin-bottom" id="time-zhi-ship">-</div>
-                            </td>
-                            <td>
-                                <span class="char-box" id="day-zhi">-</span>
-                                <div class="shipsin-bottom" id="day-zhi-ship">-</div>
-                            </td>
-                            <td>
-                                <span class="char-box" id="month-zhi">-</span>
-                                <div class="shipsin-bottom" id="month-zhi-ship">-</div>
-                            </td>
-                            <td>
-                                <span class="char-box" id="year-zhi">-</span>
-                                <div class="shipsin-bottom" id="year-zhi-ship">-</div>
-                            </td>
+                            <td><span class="char-box" id="time-zhi">-</span><div class="shipsin-bottom" id="time-zhi-ship">-</div></td>
+                            <td><span class="char-box" id="day-zhi">-</span><div class="shipsin-bottom" id="day-zhi-ship">-</div></td>
+                            <td><span class="char-box" id="month-zhi">-</span><div class="shipsin-bottom" id="month-zhi-ship">-</div></td>
+                            <td><span class="char-box" id="year-zhi">-</span><div class="shipsin-bottom" id="year-zhi-ship">-</div></td>
                         </tr>
                     </tbody>
                 </table>
@@ -392,17 +343,16 @@
             <div class="yun-container" id="yueyun-list"></div>
         </div>
 
-        <div id="today-btn-container" style="display: none; text-align: center; margin-top: 35px;">
-            <button class="today-fortune-btn" onclick="showTodayFortune()">오늘의 사주 확인하기</button>
+        <div class="action-btn-group" id="action-btn-group" style="display: none;">
+            <button class="action-btn today-btn" onclick="showTodayFortune()">오늘의 사주 확인하기</button>
+            <button class="action-btn myoun-btn" onclick="openMyounRyeok()">묘운력 확인</button>
         </div>
 
-        <div class="today-fortune-section" id="today-fortune-section">
-            <h3 class="today-title">오늘의 일진 (오늘의 사주)</h3>
+        <div class="result-sub-section" id="today-fortune-section">
+            <h3 class="section-title">오늘의 일진 (오늘의 사주)</h3>
             <p id="today-date-info" style="font-size: 0.9rem; color: #666; margin-bottom: 15px;"></p>
-            <!-- 💡 모바일 최적화를 위해 min-width 제거하고 width: 100% 적용 -->
             <div style="padding-bottom: 10px;">
                 <table class="bazi-table" style="width: 100%;">
-                    <!-- 💡 8칸을 정확하게 12.5%씩 동일하게 배분 -->
                     <colgroup>
                         <col style="width: 12.5%;"><col style="width: 12.5%;"><col style="width: 12.5%;"><col style="width: 12.5%;">
                         <col style="width: 12.5%;"><col style="width: 12.5%;"><col style="width: 12.5%;"><col style="width: 12.5%;">
@@ -419,11 +369,37 @@
                             <th>년주</th>
                         </tr>
                     </thead>
-                    <tbody id="today-fortune-tbody">
-                        <!-- JS로 동적 생성 -->
+                    <tbody id="today-fortune-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="result-sub-section" id="myoun-ryeok-section">
+            <h3 class="section-title">묘운력 (대운의 간지)</h3>
+            
+            <div style="margin-bottom: 20px; margin-top: 15px; display: flex; justify-content: center; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <label style="font-weight: 600; font-size: 0.95rem; color: var(--text-color);">확인할 날짜:</label>
+                <input type="date" id="myoun-date" style="width: auto; margin-bottom: 0; padding: 10px;">
+                <button class="save-btn" style="padding: 10px 20px; font-size: 1rem; flex: none;" onclick="calculateMyounRyeok()">묘운력 산출</button>
+            </div>
+
+            <div style="padding-bottom: 10px; max-width: 500px; margin: 0 auto;">
+                <table class="bazi-table" style="width: 100%;">
+                    <colgroup>
+                        <col style="width: 33.33%;"><col style="width: 33.33%;"><col style="width: 33.33%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th style="background-color: #e8f0ec; color: var(--accent-color);">대운의 일주</th>
+                            <th style="background-color: #e8f0ec; color: var(--accent-color);">대운의 월주</th>
+                            <th style="background-color: #e8f0ec; color: var(--accent-color);">대운의 년주</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myoun-ryeok-tbody">
                     </tbody>
                 </table>
             </div>
+            <p style="font-size: 0.8rem; color: #888; margin-top: 10px;">* 대운의 일주는 다음 업데이트에서 적용됩니다.</p>
         </div>
 
     </div>
@@ -444,6 +420,9 @@
     let globalBirthYear = 0; 
     let globalOriginalSaju = { y: "", m: "", d: "", t: "" }; 
     const STORAGE_KEY = 'yususah_saju_list';
+
+    const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+    const BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 
     window.onload = function() {
         const yearSelect = document.getElementById('year');
@@ -575,17 +554,16 @@
 
     function getShipsin(dayGan, targetChar) {
         if (!dayGan || targetChar === "?" || targetChar === "-") return "-";
-        const stems = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
         const zhiToGan = {
             "子": "癸", "丑": "己", "寅": "甲", "卯": "乙", "辰": "戊", "巳": "丙",
             "午": "丁", "未": "己", "申": "庚", "酉": "辛", "戌": "戊", "亥": "壬"
         };
-        let dIdx = stems.indexOf(dayGan);
+        let dIdx = STEMS.indexOf(dayGan);
         if(dIdx === -1) return "-";
         let dE = Math.floor(dIdx / 2); let dYy = dIdx % 2;            
         let tGan = targetChar;
         if (zhiToGan[targetChar]) tGan = zhiToGan[targetChar];
-        let tIdx = stems.indexOf(tGan);
+        let tIdx = STEMS.indexOf(tGan);
         if(tIdx === -1) return "-";
         let tE = Math.floor(tIdx / 2); let tYy = tIdx % 2;
         let diff = (tE - dE + 5) % 5;
@@ -613,8 +591,9 @@
         document.getElementById('yueyun-section').style.display = 'none';
         document.getElementById('dayun-info').innerText = '';
         
-        document.getElementById('today-btn-container').style.display = 'none';
+        document.getElementById('action-btn-group').style.display = 'none';
         document.getElementById('today-fortune-section').style.display = 'none';
+        document.getElementById('myoun-ryeok-section').style.display = 'none';
     }
 
     function calculateSaju() {
@@ -674,7 +653,6 @@
             }
 
             globalDayGan = dGanZhi.charAt(0);
-            
             globalOriginalSaju = { y: yGanZhi, m: mGanZhi, d: dGanZhi, t: tGanZhi };
 
             setCharAndColor('year-gan', yGanZhi.charAt(0)); setCharAndColor('year-zhi', yGanZhi.charAt(1));
@@ -713,15 +691,15 @@
                 let gan = dy.getGanZhi().charAt(0);
                 let zhi = dy.getGanZhi().charAt(1);
 
-                let shipGan = getShipsin(globalDayGan, gan);
-                let shipZhi = getShipsin(globalDayGan, zhi);
-
                 let exactAgeNum = globalExactBaseAge + (i - 1) * 10;
                 let displayAge = (i === 1) ? exactAgeNum.toFixed(2) : Math.round(exactAgeNum);
 
+                let shipGan = getShipsin(globalDayGan, gan);
+                let shipZhi = getShipsin(globalDayGan, zhi);
+
                 let dayunHtml = `
                     <div class="yun-item dayun-item" id="dayun-idx-${i}" onclick="selectDaYun(${i})">
-                        <div class="yun-age">${displayAge}대</div>
+                        <div class="yun-age">${displayAge}</div>
                         <div class="shipsin-top">${shipGan}</div>
                         <div class="char-box ${getElementClass(gan)}">${gan}</div>
                         <div class="char-box ${getElementClass(zhi)}">${zhi}</div>
@@ -732,7 +710,7 @@
             }
 
             document.getElementById('result-area').style.display = 'block';
-            document.getElementById('today-btn-container').style.display = 'block';
+            document.getElementById('action-btn-group').style.display = 'flex';
             document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
 
         } catch (error) {
@@ -857,10 +835,9 @@
     }
 
     function showTodayFortune() {
-        if (!globalDayGan) {
-            alert("먼저 명식을 확인해주세요.");
-            return;
-        }
+        if (!globalDayGan) { alert("먼저 명식을 확인해주세요."); return; }
+        
+        document.getElementById('myoun-ryeok-section').style.display = 'none';
 
         const today = new Date();
         const todayYear = today.getFullYear();
@@ -907,19 +884,13 @@
             { label: '년주', gz: globalOriginalSaju.y }
         ];
 
-        let htmlTop = "<tr>";
-        let htmlGan = "<tr>";
-        let htmlZhi = "<tr>";
-        let htmlBot = "<tr>";
+        let htmlTop = "<tr>"; let htmlGan = "<tr>"; let htmlZhi = "<tr>"; let htmlBot = "<tr>";
 
         dataArr.forEach((item, index) => {
-            let gan = item.gz.charAt(0);
-            let zhi = item.gz.charAt(1);
-            let shipGan = getShipsin(globalDayGan, gan);
-            let shipZhi = getShipsin(globalDayGan, zhi);
+            let gan = item.gz.charAt(0); let zhi = item.gz.charAt(1);
+            let shipGan = getShipsin(globalDayGan, gan); let shipZhi = getShipsin(globalDayGan, zhi);
             
             if(index === 5) shipGan = "일간"; 
-
             let borderStyle = (index === 4) ? "border-left: 3px solid var(--accent-color);" : "";
 
             htmlTop += `<td style="${borderStyle}"><div class="shipsin-top ${index===5?'day-master-text':''}">${shipGan}</div></td>`;
@@ -928,10 +899,7 @@
             htmlBot += `<td style="${borderStyle}"><div class="shipsin-bottom">${shipZhi}</div></td>`;
         });
 
-        htmlTop += "</tr>";
-        htmlGan += "</tr>";
-        htmlZhi += "</tr>";
-        htmlBot += "</tr>";
+        htmlTop += "</tr>"; htmlGan += "</tr>"; htmlZhi += "</tr>"; htmlBot += "</tr>";
 
         document.getElementById('today-fortune-tbody').innerHTML = htmlTop + htmlGan + htmlZhi + htmlBot;
         document.getElementById('today-date-info').innerText = `[${todayYear}년 ${todayMonth}월 ${todayDate}일 기준]`;
@@ -939,6 +907,101 @@
         let section = document.getElementById('today-fortune-section');
         section.style.display = 'block';
         section.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openMyounRyeok() {
+        if (!globalDayGan) { alert("먼저 명식을 확인해주세요."); return; }
+        
+        document.getElementById('today-fortune-section').style.display = 'none';
+        
+        let today = new Date();
+        let yyyy = today.getFullYear();
+        let mm = String(today.getMonth() + 1).padStart(2, '0');
+        let dd = String(today.getDate()).padStart(2, '0');
+        document.getElementById('myoun-date').value = `${yyyy}-${mm}-${dd}`;
+        
+        let section = document.getElementById('myoun-ryeok-section');
+        section.style.display = 'block';
+        section.scrollIntoView({ behavior: 'smooth' });
+        
+        calculateMyounRyeok();
+    }
+
+    function calculateMyounRyeok() {
+        let dateStr = document.getElementById('myoun-date').value;
+        if(!dateStr) { alert("날짜를 선택해주세요."); return; }
+        
+        let targetDate = new Date(dateStr);
+        let targetYear = targetDate.getFullYear();
+        
+        let currentIndex = 0;
+        let currentDaYunGanZhi = "--";
+        
+        for (let i = 1; i <= 9; i++) {
+            let dy = globalDaYunArr[i];
+            if (!dy) continue;
+            let startY = dy.getStartYear();
+            if (targetYear >= startY && targetYear <= startY + 9) {
+                currentIndex = i;
+                currentDaYunGanZhi = dy.getGanZhi();
+                break;
+            }
+        }
+        
+        if (currentIndex === 0 && globalDaYunArr[0]) {
+            currentDaYunGanZhi = globalDaYunArr[0].getGanZhi(); 
+        }
+
+        let gender = document.querySelector('input[name="gender"]:checked').value;
+        let yearGan = globalOriginalSaju.y.charAt(0);
+        let isYangYear = "甲丙戊庚壬".includes(yearGan);
+        let isForward = (gender === 'male' && isYangYear) || (gender === 'female' && !isYangYear);
+
+        let transitionCount = 0;
+        for(let i = 1; i <= currentIndex; i++) {
+            let branch = globalDaYunArr[i].getGanZhi().charAt(1);
+            if(isForward && branch === '寅') transitionCount++;
+            if(!isForward && branch === '丑') transitionCount--;
+        }
+        
+        let baseGanIdx = STEMS.indexOf(globalOriginalSaju.y.charAt(0));
+        let baseZhiIdx = BRANCHES.indexOf(globalOriginalSaju.y.charAt(1));
+        
+        let newGanIdx = (baseGanIdx + transitionCount) % 10;
+        if(newGanIdx < 0) newGanIdx += 10; 
+        let newZhiIdx = (baseZhiIdx + transitionCount) % 12;
+        if(newZhiIdx < 0) newZhiIdx += 12; 
+        
+        let dyYearGanZhi = STEMS[newGanIdx] + BRANCHES[newZhiIdx];
+        
+        if (currentIndex === 0) dyYearGanZhi = globalOriginalSaju.y;
+
+        let dyMonthGanZhi = currentDaYunGanZhi;
+        let dyDayGanZhi = "--"; 
+
+        const dataArr = [
+            { label: '대운의 일주', gz: dyDayGanZhi },
+            { label: '대운의 월주', gz: dyMonthGanZhi },
+            { label: '대운의 년주', gz: dyYearGanZhi }
+        ];
+
+        let htmlTop = "<tr>"; let htmlGan = "<tr>"; let htmlZhi = "<tr>"; let htmlBot = "<tr>";
+
+        dataArr.forEach((item) => {
+            let gan = item.gz.charAt(0);
+            let zhi = item.gz.charAt(1);
+            
+            let shipGan = (gan === "-") ? "-" : getShipsin(globalDayGan, gan);
+            let shipZhi = (zhi === "-") ? "-" : getShipsin(globalDayGan, zhi);
+            
+            htmlTop += `<td><div class="shipsin-top">${shipGan}</div></td>`;
+            htmlGan += `<td><span class="char-box ${getElementClass(gan)}">${gan}</span></td>`;
+            htmlZhi += `<td><span class="char-box ${getElementClass(zhi)}">${zhi}</span></td>`;
+            htmlBot += `<td><div class="shipsin-bottom">${shipZhi}</div></td>`;
+        });
+
+        htmlTop += "</tr>"; htmlGan += "</tr>"; htmlZhi += "</tr>"; htmlBot += "</tr>";
+        document.getElementById('myoun-ryeok-tbody').innerHTML = htmlTop + htmlGan + htmlZhi + htmlBot;
     }
 
 </script>
