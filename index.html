@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
     
     <style>
-        /* 🎨 산뜻하고 프레시한 청자/옥색 메인 테마 */
         :root {
             --bg-color: #f0f5f3; 
             --text-color: #2b3a32; 
@@ -65,8 +64,7 @@
         }
         
         select:focus, input[type="time"]:focus, input[type="text"]:focus {
-            outline: none;
-            border-color: var(--accent-color);
+            outline: none; border-color: var(--accent-color);
         }
 
         .flex-row { display: flex; gap: 10px; }
@@ -77,56 +75,87 @@
         input[type="radio"], input[type="checkbox"] { margin-right: 6px; accent-color: var(--accent-color); }
         .checkbox-group { display: flex; align-items: center; margin-top: -5px; margin-bottom: 15px; }
 
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
         .submit-btn {
-            width: 100%; padding: 16px; 
-            background-color: var(--accent-color); 
-            color: #ffffff;
+            flex: 2; padding: 16px; background-color: var(--accent-color); color: #ffffff;
             border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 700; font-family: inherit;
-            cursor: pointer; transition: 0.3s; margin-top: 15px;
-            box-shadow: 0 4px 10px rgba(74, 130, 104, 0.2);
+            cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(74, 130, 104, 0.2);
         }
         .submit-btn:hover { background-color: var(--btn-hover); transform: translateY(-1px); }
 
+        .save-btn {
+            flex: 1; padding: 16px; background-color: #ffffff; color: var(--accent-color);
+            border: 2px solid var(--accent-color); border-radius: 8px; font-size: 1.1rem; font-weight: 700; font-family: inherit;
+            cursor: pointer; transition: 0.3s;
+        }
+        .save-btn:hover { background-color: #f4f8f6; }
+
+        .today-fortune-btn {
+            display: inline-block; padding: 14px 30px;
+            background-color: var(--text-color); color: #ffffff;
+            border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; font-family: inherit;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .today-fortune-btn:hover { background-color: #1f2b25; transform: translateY(-2px); }
+
+        .saved-list-section {
+            margin-top: 35px; background-color: #ffffff; padding: 20px; 
+            border-radius: 12px; border: 1px solid var(--border-color);
+        }
+        .saved-list-section h3 {
+            margin-top: 0; color: var(--text-color); font-size: 1.2rem; 
+            border-bottom: 2px solid var(--border-color); padding-bottom: 12px; margin-bottom: 15px;
+        }
+        .warning-text {
+            font-size: 0.85rem; color: #d32f2f; background-color: #ffebee; 
+            padding: 10px 12px; border-radius: 6px; margin-bottom: 15px; 
+            word-break: keep-all; line-height: 1.5; font-weight: 600;
+        }
+        .saved-item {
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 12px 10px; border-bottom: 1px solid #f0f0f0; transition: background-color 0.2s;
+        }
+        .saved-item:hover { background-color: #f9fbfaf0; }
+        .saved-item:last-child { border-bottom: none; }
+        .saved-info { display: flex; flex-direction: column; gap: 5px; cursor: pointer; flex: 1; }
+        .saved-name { font-weight: 700; color: var(--text-color); font-size: 1.05rem; }
+        .saved-detail { font-size: 0.8rem; color: #777; }
+        .del-btn {
+            background-color: #e57373; color: white; border: none; padding: 6px 12px; 
+            border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: 0.2s;
+        }
+        .del-btn:hover { background-color: #d32f2f; }
+
         #result-area {
-            display: none; margin-top: 30px; padding-top: 25px;
+            display: none; margin-top: 35px; padding-top: 25px;
             border-top: 2px dashed var(--border-color); text-align: center;
-            overflow-x: auto;
         }
         
-        .result-top-flex {
-            display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 20px; min-width: 600px;
-        }
-
+        /* 모바일 최적화를 위해 min-width 제거 및 width 100% 적용 */
+        .result-top-flex { display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 20px; width: 100%; }
         .bazi-table-container { width: 60%; }
         .selected-yun-container { width: 40%; display: flex; justify-content: flex-end; gap: 5px; }
-
-        .bazi-table { width: 100%; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border-radius: 8px; overflow: hidden; }
+        
+        /* 공통 테이블 스타일: table-layout: fixed로 칸 너비 고정 */
+        .bazi-table { width: 100%; table-layout: fixed; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border-radius: 8px; overflow: hidden; }
         .yun-table { width: 32%; display: none; }
-
-        .bazi-table th { font-size: 0.9rem; font-weight: 600; color: #666; padding-bottom: 8px; background-color: #fcfdfc; }
+        .bazi-table th { font-size: 0.9rem; font-weight: 600; color: #666; padding-bottom: 8px; background-color: #fcfdfc; padding-top: 8px; }
         .bazi-table td { padding: 0; border: 1px solid var(--border-color); vertical-align: middle; background-color: #ffffff; }
         .yun-table td { width: 100%; }
 
-        /* ✨ 팬톤 스타일의 프리미엄 오행 컬러 팔레트 */
-        .el-wood { background-color: #5E9873; color: #ffffff; } /* 세이지 그린 */
-        .el-fire { background-color: #DE6C61; color: #ffffff; } /* 코랄 레드 */
-        .el-earth { background-color: #E4B558; color: var(--text-color); } /* 오커 황토 */
-        .el-metal { background-color: #F0F2F1; color: var(--text-color); } /* 플래티넘 화이트 */
-        .el-water { background-color: #36424D; color: #ffffff; } /* 슬레이트 블랙 */
+        .el-wood { background-color: #5E9873; color: #ffffff; }
+        .el-fire { background-color: #DE6C61; color: #ffffff; }
+        .el-earth { background-color: #E4B558; color: var(--text-color); }
+        .el-metal { background-color: #F0F2F1; color: var(--text-color); }
+        .el-water { background-color: #36424D; color: #ffffff; }
         .el-unknown { background-color: #E2E6E4; color: #666666; }
 
         .char-box { display: block; padding: 12px 0; font-size: 1.6rem; font-weight: 700; text-align: center; }
-        
-        .shipsin-top { 
-            font-size: 0.75rem; color: #666; font-weight: 600; letter-spacing: -0.5px;
-            padding: 6px 0; margin: 0; background-color: #f8faf9; text-align: center;
-        }
-        .shipsin-bottom { 
+        .shipsin-top, .shipsin-bottom { 
             font-size: 0.75rem; color: #666; font-weight: 600; letter-spacing: -0.5px;
             padding: 6px 0; margin: 0; background-color: #f8faf9; text-align: center;
         }
         .day-master-text { color: var(--accent-color) !important; font-weight: 700 !important; font-size: 0.8rem; }
-
         .bazi-table td > .shipsin-top { border-bottom: 1px solid var(--border-color); }
         .bazi-table td > .shipsin-bottom { border-top: 1px solid var(--border-color); }
 
@@ -136,47 +165,50 @@
             color: var(--accent-color); text-align: right;
             border-bottom: 1px solid var(--border-color); padding-bottom: 5px;
         }
-        
-        .yun-container { display: flex; justify-content: space-between; gap: 6px; overflow-x: auto; padding-bottom: 8px; }
-        
+        .yun-container { display: flex; justify-content: space-between; gap: 6px; padding-bottom: 8px; }
         .yun-item {
-            display: flex; flex-direction: column; flex: 1; min-width: 50px;
+            display: flex; flex-direction: column; flex: 1; min-width: 0; /* 모바일 축소를 위해 최소너비 제한 해제 */
             border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden;
             background-color: #ffffff; cursor: pointer; transition: all 0.2s ease;
         }
         .yun-item:hover { transform: translateY(-3px); border-color: var(--active-border); box-shadow: 0 4px 8px rgba(74, 130, 104, 0.1); }
         .yun-item.active { border: 2px solid var(--accent-color); font-weight: 700; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(74, 130, 104, 0.15); }
         .yun-item > div:not(:last-child) { border-bottom: 1px solid var(--border-color); }
-
-        .yun-age {
-            background-color: #f8faf9; font-size: 0.75rem; font-weight: 600;
-            padding: 5px 0; text-align: center; letter-spacing: -0.5px; color: var(--text-color);
-        }
+        .yun-age { background-color: #f8faf9; font-size: 0.75rem; font-weight: 600; padding: 5px 0; text-align: center; letter-spacing: -0.5px; color: var(--text-color); }
         .yun-item .char-box { padding: 6px 0; font-size: 1.2rem; }
 
-        .feedback-section {
-            margin-top: 40px;
-            padding: 25px 20px;
-            background-color: #f8faf9;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            text-align: center;
+        .today-fortune-section {
+            display: none; margin-top: 40px; padding-top: 25px;
+            border-top: 2px solid var(--accent-color); text-align: center;
         }
-        .feedback-btn {
-            display: inline-block;
-            padding: 12px 28px;
-            background-color: #ffffff;
-            color: var(--accent-color);
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 1rem;
-            border: 1px solid var(--accent-color);
-            transition: all 0.3s ease;
-        }
-        .feedback-btn:hover {
-            background-color: var(--accent-color);
-            color: #ffffff;
+        .today-title { font-size: 1.3rem; font-weight: 700; color: var(--text-color); margin-bottom: 5px; }
+        
+        .feedback-section { margin-top: 40px; padding: 25px 20px; background-color: #f8faf9; border-radius: 12px; border: 1px solid var(--border-color); text-align: center; }
+        .feedback-btn { display: inline-block; padding: 12px 28px; background-color: #ffffff; color: var(--accent-color); text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 1rem; border: 1px solid var(--accent-color); transition: all 0.3s ease; }
+        .feedback-btn:hover { background-color: var(--accent-color); color: #ffffff; }
+
+        /* 📱 모바일 디바이스 최적화 (가로 스크롤 제거 및 화면 맞춤) */
+        @media (max-width: 600px) {
+            .container { padding: 20px 10px; }
+            .result-top-flex { gap: 5px; }
+            
+            /* 명식 표 글씨 축소 */
+            .char-box { font-size: 1.1rem !important; padding: 5px 0 !important; }
+            .shipsin-top, .shipsin-bottom { font-size: 0.65rem !important; padding: 3px 0 !important; letter-spacing: -1px; }
+            .bazi-table th { font-size: 0.7rem !important; letter-spacing: -1px; padding: 4px 0; }
+            .day-master-text { font-size: 0.7rem !important; }
+            
+            /* 대운/세운 리스트 축소 */
+            .yun-container { gap: 2px; }
+            .yun-age { font-size: 0.65rem !important; padding: 3px 0 !important; letter-spacing: -1px; }
+            .yun-item .char-box { font-size: 0.95rem !important; padding: 4px 0 !important; }
+            
+            /* 오늘의 사주 버튼 크기 조정 */
+            .today-fortune-btn { width: 100%; padding: 12px 15px; font-size: 1rem; }
+            
+            /* 저장 목록 글자 크기 조정 */
+            .saved-name { font-size: 0.95rem; }
+            .saved-detail { font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -187,7 +219,7 @@
 
     <div class="form-group">
         <label>이름 (선택)</label>
-        <input type="text" id="user-name" placeholder="이름 또는 닉네임을 입력하세요">
+        <input type="text" id="user-name" placeholder="저장 시 식별할 이름 또는 닉네임">
     </div>
 
     <div class="form-group">
@@ -233,7 +265,18 @@
         </div>
     </div>
 
-    <button class="submit-btn" onclick="calculateSaju()">명식 확인</button>
+    <div class="btn-group">
+        <button class="submit-btn" onclick="calculateSaju()">명식 확인</button>
+        <button class="save-btn" onclick="saveSaju()">명식 저장</button>
+    </div>
+
+    <div class="saved-list-section">
+        <h3>저장된 명식 목록</h3>
+        <p class="warning-text">
+            ⚠️ [주의사항] 저장된 명식 데이터는 현재 사용 중인 기기의 브라우저에만 보관됩니다. 방문 기록을 지우거나 다른 기기에서 접속하면 보이지 않습니다.
+        </p>
+        <div id="saved-list-container"></div>
+    </div>
 
     <div id="result-area">
         <p id="dayun-info" style="font-size: 0.95rem; color: #e57373; margin-bottom: 5px; text-align: right; font-weight: 700;"></p>
@@ -348,6 +391,41 @@
             <div class="yun-title" id="yueyun-title">월 운 (月 運)</div>
             <div class="yun-container" id="yueyun-list"></div>
         </div>
+
+        <div id="today-btn-container" style="display: none; text-align: center; margin-top: 35px;">
+            <button class="today-fortune-btn" onclick="showTodayFortune()">오늘의 사주 확인하기</button>
+        </div>
+
+        <div class="today-fortune-section" id="today-fortune-section">
+            <h3 class="today-title">오늘의 일진 (오늘의 사주)</h3>
+            <p id="today-date-info" style="font-size: 0.9rem; color: #666; margin-bottom: 15px;"></p>
+            <!-- 💡 모바일 최적화를 위해 min-width 제거하고 width: 100% 적용 -->
+            <div style="padding-bottom: 10px;">
+                <table class="bazi-table" style="width: 100%;">
+                    <!-- 💡 8칸을 정확하게 12.5%씩 동일하게 배분 -->
+                    <colgroup>
+                        <col style="width: 12.5%;"><col style="width: 12.5%;"><col style="width: 12.5%;"><col style="width: 12.5%;">
+                        <col style="width: 12.5%;"><col style="width: 12.5%;"><col style="width: 12.5%;"><col style="width: 12.5%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th style="background-color: #e8f0ec; color: var(--accent-color);">일운</th>
+                            <th style="background-color: #e8f0ec; color: var(--accent-color);">월운</th>
+                            <th style="background-color: #e8f0ec; color: var(--accent-color);">세운</th>
+                            <th style="background-color: #e8f0ec; color: var(--accent-color);">대운</th>
+                            <th style="border-left: 2px solid var(--accent-color);">시주</th>
+                            <th>일주</th>
+                            <th>월주</th>
+                            <th>년주</th>
+                        </tr>
+                    </thead>
+                    <tbody id="today-fortune-tbody">
+                        <!-- JS로 동적 생성 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
     <div class="feedback-section">
@@ -364,6 +442,8 @@
     let globalDayGan = ""; 
     let globalExactBaseAge = 0; 
     let globalBirthYear = 0; 
+    let globalOriginalSaju = { y: "", m: "", d: "", t: "" }; 
+    const STORAGE_KEY = 'yususah_saju_list';
 
     window.onload = function() {
         const yearSelect = document.getElementById('year');
@@ -376,6 +456,7 @@
         for (let i = 1; i <= 31; i++) daySelect.add(new Option(i.toString().padStart(2, '0') + '일', i));
         
         yearSelect.value = 1980; 
+        loadSajuList();
     };
 
     function toggleTimeInput() {
@@ -384,6 +465,103 @@
         timeInput.disabled = isUnknown;
         timeInput.style.opacity = isUnknown ? '0.5' : '1';
         if(isUnknown) timeInput.value = '';
+    }
+
+    function saveSaju() {
+        const userName = document.getElementById('user-name').value.trim();
+        if (!userName) {
+            alert("명식을 저장하시려면 반드시 [이름]을 입력해주세요.");
+            document.getElementById('user-name').focus();
+            return;
+        }
+
+        const data = {
+            id: Date.now().toString(),
+            name: userName,
+            year: document.getElementById('year').value,
+            month: document.getElementById('month').value,
+            day: document.getElementById('day').value,
+            time: document.getElementById('birth-time').value,
+            isUnknownTime: document.getElementById('unknown-time').checked,
+            calendarType: document.querySelector('input[name="calendar-type"]:checked').value,
+            gender: document.querySelector('input[name="gender"]:checked').value,
+            zishiType: document.querySelector('input[name="zishi-type"]:checked').value
+        };
+
+        let list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        list.push(data);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        alert(`[${userName}]님의 명식이 안전하게 저장되었습니다.`);
+        loadSajuList(); 
+    }
+
+    function loadSajuList() {
+        const container = document.getElementById('saved-list-container');
+        let list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        
+        if (list.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#999; font-size:0.95rem; padding: 15px 0;">저장된 명식이 없습니다.</p>';
+            return;
+        }
+
+        container.innerHTML = '';
+        for (let i = list.length - 1; i >= 0; i--) {
+            let item = list[i];
+            let calStr = item.calendarType === 'solar' ? '양력' : (item.calendarType === 'lunar-regular' ? '음력(평)' : '음력(윤)');
+            let genStr = item.gender === 'male' ? '남성' : '여성';
+            let timeStr = item.isUnknownTime ? '시간모름' : item.time;
+            
+            let html = `
+                <div class="saved-item">
+                    <div class="saved-info" onclick="loadSavedData('${item.id}')">
+                        <span class="saved-name">${item.name} <span style="font-size:0.8rem; font-weight:normal; color:#666;">(${genStr})</span></span>
+                        <span class="saved-detail">${calStr} ${item.year}년 ${item.month}월 ${item.day}일 | ${timeStr}</span>
+                    </div>
+                    <button class="del-btn" onclick="deleteSaju('${item.id}', event)">삭제</button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+    }
+
+    function loadSavedData(id) {
+        let list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        let item = list.find(x => x.id === id);
+        if(!item) return;
+
+        document.getElementById('user-name').value = item.name;
+        document.getElementById('year').value = item.year;
+        document.getElementById('month').value = item.month;
+        document.getElementById('day').value = item.day;
+        
+        let timeInput = document.getElementById('birth-time');
+        let unkInput = document.getElementById('unknown-time');
+        
+        unkInput.checked = item.isUnknownTime;
+        if(item.isUnknownTime) {
+            timeInput.value = '';
+            timeInput.disabled = true;
+            timeInput.style.opacity = '0.5';
+        } else {
+            timeInput.value = item.time;
+            timeInput.disabled = false;
+            timeInput.style.opacity = '1';
+        }
+
+        document.querySelector(`input[name="calendar-type"][value="${item.calendarType}"]`).checked = true;
+        document.querySelector(`input[name="gender"][value="${item.gender}"]`).checked = true;
+        document.querySelector(`input[name="zishi-type"][value="${item.zishiType}"]`).checked = true;
+
+        calculateSaju();
+    }
+
+    function deleteSaju(id, event) {
+        event.stopPropagation(); 
+        if(!confirm('정말 이 명식을 삭제하시겠습니까?')) return;
+        let list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        list = list.filter(x => x.id !== id);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        loadSajuList(); 
     }
 
     function getElementClass(char) {
@@ -402,20 +580,14 @@
             "子": "癸", "丑": "己", "寅": "甲", "卯": "乙", "辰": "戊", "巳": "丙",
             "午": "丁", "未": "己", "申": "庚", "酉": "辛", "戌": "戊", "亥": "壬"
         };
-
         let dIdx = stems.indexOf(dayGan);
         if(dIdx === -1) return "-";
-        let dE = Math.floor(dIdx / 2); 
-        let dYy = dIdx % 2;            
-
+        let dE = Math.floor(dIdx / 2); let dYy = dIdx % 2;            
         let tGan = targetChar;
         if (zhiToGan[targetChar]) tGan = zhiToGan[targetChar];
-
         let tIdx = stems.indexOf(tGan);
         if(tIdx === -1) return "-";
-        let tE = Math.floor(tIdx / 2);
-        let tYy = tIdx % 2;
-
+        let tE = Math.floor(tIdx / 2); let tYy = tIdx % 2;
         let diff = (tE - dE + 5) % 5;
         let sameYy = (dYy === tYy);
 
@@ -424,7 +596,6 @@
         if (diff === 2) return sameYy ? "편재" : "정재";
         if (diff === 3) return sameYy ? "편관" : "정관";
         if (diff === 4) return sameYy ? "편인" : "정인";
-        
         return "-";
     }
 
@@ -441,6 +612,9 @@
         document.getElementById('nianyun-section').style.display = 'none';
         document.getElementById('yueyun-section').style.display = 'none';
         document.getElementById('dayun-info').innerText = '';
+        
+        document.getElementById('today-btn-container').style.display = 'none';
+        document.getElementById('today-fortune-section').style.display = 'none';
     }
 
     function calculateSaju() {
@@ -500,6 +674,8 @@
             }
 
             globalDayGan = dGanZhi.charAt(0);
+            
+            globalOriginalSaju = { y: yGanZhi, m: mGanZhi, d: dGanZhi, t: tGanZhi };
 
             setCharAndColor('year-gan', yGanZhi.charAt(0)); setCharAndColor('year-zhi', yGanZhi.charAt(1));
             setCharAndColor('month-gan', mGanZhi.charAt(0)); setCharAndColor('month-zhi', mGanZhi.charAt(1));
@@ -545,7 +721,7 @@
 
                 let dayunHtml = `
                     <div class="yun-item dayun-item" id="dayun-idx-${i}" onclick="selectDaYun(${i})">
-                        <div class="yun-age">${displayAge}</div>
+                        <div class="yun-age">${displayAge}대</div>
                         <div class="shipsin-top">${shipGan}</div>
                         <div class="char-box ${getElementClass(gan)}">${gan}</div>
                         <div class="char-box ${getElementClass(zhi)}">${zhi}</div>
@@ -556,6 +732,7 @@
             }
 
             document.getElementById('result-area').style.display = 'block';
+            document.getElementById('today-btn-container').style.display = 'block';
             document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
 
         } catch (error) {
@@ -678,6 +855,92 @@
         
         document.getElementById('yue-yun-table').style.display = 'table';
     }
+
+    function showTodayFortune() {
+        if (!globalDayGan) {
+            alert("먼저 명식을 확인해주세요.");
+            return;
+        }
+
+        const today = new Date();
+        const todayYear = today.getFullYear();
+        const todayMonth = today.getMonth() + 1;
+        const todayDate = today.getDate();
+
+        let todaySolar = Solar.fromDate(today);
+        let todayLunar = todaySolar.getLunar();
+        let todayBazi = todayLunar.getEightChar();
+        
+        let zType = document.querySelector('input[name="zishi-type"]:checked').value;
+        if (zType === 'traditional') {
+            todayBazi.setSect(2);
+        } else {
+            todayBazi.setSect(1); 
+        }
+        
+        let tGanZhiYear = todayBazi.getYear();
+        let tGanZhiMonth = todayBazi.getMonth();
+        let tGanZhiDay = todayBazi.getDay();
+
+        let currentDaYun = "--";
+        for (let i = 1; i <= 9; i++) {
+            let dy = globalDaYunArr[i];
+            if (!dy) continue;
+            let startY = dy.getStartYear();
+            if (todayYear >= startY && todayYear <= startY + 9) {
+                currentDaYun = dy.getGanZhi();
+                break;
+            }
+        }
+        if (currentDaYun === "--" && globalDaYunArr[0]) {
+            currentDaYun = globalDaYunArr[0].getGanZhi(); 
+        }
+
+        const dataArr = [
+            { label: '일운', gz: tGanZhiDay },
+            { label: '월운', gz: tGanZhiMonth },
+            { label: '세운', gz: tGanZhiYear },
+            { label: '대운', gz: currentDaYun },
+            { label: '시주', gz: globalOriginalSaju.t },
+            { label: '일주', gz: globalOriginalSaju.d },
+            { label: '월주', gz: globalOriginalSaju.m },
+            { label: '년주', gz: globalOriginalSaju.y }
+        ];
+
+        let htmlTop = "<tr>";
+        let htmlGan = "<tr>";
+        let htmlZhi = "<tr>";
+        let htmlBot = "<tr>";
+
+        dataArr.forEach((item, index) => {
+            let gan = item.gz.charAt(0);
+            let zhi = item.gz.charAt(1);
+            let shipGan = getShipsin(globalDayGan, gan);
+            let shipZhi = getShipsin(globalDayGan, zhi);
+            
+            if(index === 5) shipGan = "일간"; 
+
+            let borderStyle = (index === 4) ? "border-left: 3px solid var(--accent-color);" : "";
+
+            htmlTop += `<td style="${borderStyle}"><div class="shipsin-top ${index===5?'day-master-text':''}">${shipGan}</div></td>`;
+            htmlGan += `<td style="${borderStyle}"><span class="char-box ${getElementClass(gan)}">${gan}</span></td>`;
+            htmlZhi += `<td style="${borderStyle}"><span class="char-box ${getElementClass(zhi)}">${zhi}</span></td>`;
+            htmlBot += `<td style="${borderStyle}"><div class="shipsin-bottom">${shipZhi}</div></td>`;
+        });
+
+        htmlTop += "</tr>";
+        htmlGan += "</tr>";
+        htmlZhi += "</tr>";
+        htmlBot += "</tr>";
+
+        document.getElementById('today-fortune-tbody').innerHTML = htmlTop + htmlGan + htmlZhi + htmlBot;
+        document.getElementById('today-date-info').innerText = `[${todayYear}년 ${todayMonth}월 ${todayDate}일 기준]`;
+        
+        let section = document.getElementById('today-fortune-section');
+        section.style.display = 'block';
+        section.scrollIntoView({ behavior: 'smooth' });
+    }
+
 </script>
 
 </body>
