@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유수사 만세력</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #f7f4ea;
+            --text-color: #2c2b29;
+            --accent-color: #8b7d6b;
+            --border-color: #d6d0c4;
+            --white-bg: rgba(255, 255, 255, 0.7);
+            --active-border: #8b7d6b;
+        }
+
+        body {
+            font-family: 'Noto Serif KR', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--white-bg);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        /* 타이틀 및 버전 스타일 */
+        h1 {
+            text-align: center; font-size: 1.8rem; margin-bottom: 30px;
+            font-weight: 700; letter-spacing: 2px; border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 15px;
+        }
+        .version-text {
+            display: block; font-size: 0.8rem; font-weight: 400; color: #666; 
+            letter-spacing: 0; margin-top: 8px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        
+        /* input[type="text"] 추가 */
+        select, input[type="time"], input[type="text"] {
+            width: 100%; padding: 12px; border: 1px solid var(--border-color);
+            border-radius: 6px; background-color: transparent; font-family: inherit;
+            font-size: 1rem; color: var(--text-color); box-sizing: border-box; margin-bottom: 10px;
+        }
+        
+        .flex-row { display: flex; gap: 10px; }
+        .flex-row select { flex: 1; }
+        
+        .radio-group { display: flex; gap: 15px; flex-wrap: wrap; padding: 10px 0; }
+        .radio-group label { display: flex; align-items: center; cursor: pointer; font-weight: 400;}
+        input[type="radio"], input[type="checkbox"] { margin-right: 6px; accent-color: var(--accent-color); }
+        .checkbox-group { display: flex; align-items: center; margin-top: -5px; margin-bottom: 15px; }
+
+        .submit-btn {
+            width: 100%; padding: 16px; background-color: var(--text-color); color: var(--bg-color);
+            border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 600; font-family: inherit;
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        .submit-btn:hover { background-color: var(--accent-color); }
+
+        #result-area {
+            display: none; margin-top: 30px; padding-top: 20px;
+            border-top: 1px dashed var(--border-color); text-align: center;
+            overflow-x: auto;
+        }
+        
+        .result-top-flex {
+            display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 20px; min-width: 600px;
+        }
+
+        .bazi-table-container { width: 60%; }
+        .selected-yun-container { width: 40%; display: flex; justify-content: flex-end; gap: 5px; }
+
+        .bazi-table { width: 100%; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .yun-table { width: 32%; display: none; }
+
+        .bazi-table th { font-size: 0.9rem; font-weight: 600; color: #555; padding-bottom: 8px; }
+        .bazi-table td { padding: 0; border: 1px solid var(--border-color); vertical-align: middle; }
+        .yun-table td { width: 100%; }
+
+        .el-wood { background-color: #4CAF50; color: white; }
+        .el-fire { background-color: #F44336; color: white; }
+        .el-earth { background-color: #FFC107; color: black; }
+        .el-metal { background-color: #FFFFFF; color: black; }
+        .el-water { background-color: #212121; color: white; }
+        .el-unknown { background-color: #e0e0e0; color: #666; }
+
+        .char-box { display: block; padding: 12px 0; font-size: 1.6rem; font-weight: 700; text-align: center; }
+        
+        .shipsin-top { 
+            font-size: 0.75rem; color: #777; font-weight: 600; letter-spacing: -0.5px;
+            padding: 5px 0; margin: 0; background-color: var(--bg-color); text-align: center;
+        }
+        .shipsin-bottom { 
+            font-size: 0.75rem; color: #777; font-weight: 600; letter-spacing: -0.5px;
+            padding: 5px 0; margin: 0; background-color: var(--bg-color); text-align: center;
+        }
+        .day-master-text { color: var(--text-color) !important; font-weight: 700 !important; font-size: 0.8rem; }
+
+        .bazi-table td > .shipsin-top { border-bottom: 1px solid var(--border-color); }
+        .bazi-table td > .shipsin-bottom { border-top: 1px solid var(--border-color); }
+
+        .yun-section { margin-top: 25px; }
+        .yun-title {
+            font-size: 1.1rem; font-weight: 600; margin-bottom: 10px;
+            color: var(--text-color); text-align: right;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 5px;
+        }
+        
+        .yun-container { display: flex; justify-content: space-between; gap: 4px; overflow-x: auto; padding-bottom: 5px; }
+        
+        .yun-item {
+            display: flex; flex-direction: column; flex: 1; min-width: 50px;
+            border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; transition: 0.2s;
+        }
+        .yun-item:hover { transform: translateY(-2px); border-color: var(--active-border); }
+        .yun-item.active { border: 2px solid var(--text-color); font-weight: 700; }
+        .yun-item > div:not(:last-child) { border-bottom: 1px solid var(--border-color); }
+
+        .yun-age {
+            background-color: var(--bg-color); font-size: 0.75rem; font-weight: 600;
+            padding: 5px 0; text-align: center; letter-spacing: -0.5px;
+        }
+        .yun-item .char-box { padding: 6px 0; font-size: 1.2rem; }
+
+        /* 피드백 링크 버튼 영역 스타일 */
+        .feedback-section {
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 1px dashed var(--border-color);
+            text-align: center;
+        }
+        .feedback-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .feedback-btn:hover {
+            background-color: #7a6e5e;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 타이틀 및 버전 수정 -->
+    <h1>유수사 만세력 <span class="version-text">Ver. 0.9(2026.05.01.)</span></h1>
+
+    <!-- 이름 입력 항목 추가 (제일 처음) -->
+    <div class="form-group">
+        <label>이름 (선택)</label>
+        <input type="text" id="user-name" placeholder="이름 또는 닉네임을 입력하세요">
+    </div>
+
+    <div class="form-group">
+        <label>생년월일</label>
+        <div class="flex-row">
+            <select id="year"></select>
+            <select id="month"></select>
+            <select id="day"></select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>태어난 시간</label>
+        <input type="time" id="birth-time">
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="unknown-time" onchange="toggleTimeInput()"> 시간을 모름</label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>달력 구분</label>
+        <div class="radio-group">
+            <label><input type="radio" name="calendar-type" value="solar" checked> 양력</label>
+            <label><input type="radio" name="calendar-type" value="lunar-regular"> 음력(평달)</label>
+            <label><input type="radio" name="calendar-type" value="lunar-leap"> 음력(윤달)</label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>성별</label>
+        <div class="radio-group">
+            <label><input type="radio" name="gender" value="male" checked> 남성 (乾命)</label>
+            <label><input type="radio" name="gender" value="female"> 여성 (坤命)</label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>자시(子時) / 일주 변경 기준</label>
+        <div class="radio-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+            <label><input type="radio" name="zishi-type" value="traditional"> 전통 자시 (23:30부터 다음 날 일주로 변경)</label>
+            <label><input type="radio" name="zishi-type" value="night-morning"> 야자시/조자시 (00:30부터 다음 날 일주로 변경)</label>
+            <label><input type="radio" name="zishi-type" value="inshi" checked> 인시일수론 (03:30부터 다음 날 일주로 변경)</label>
+        </div>
+    </div>
+
+    <!-- 버튼명 수정 -->
+    <button class="submit-btn" onclick="calculateSaju()">명식 확인</button>
+
+    <div id="result-area">
+        <p id="dayun-info" style="font-size: 0.95rem; color: #d32f2f; margin-bottom: 5px; text-align: right; font-weight: 600;"></p>
+        <p id="calc-info" style="font-size: 0.85rem; color: #666; margin-bottom: 15px; text-align: right; margin-top: 0;"></p>
+        
+        <div class="result-top-flex">
+            <!-- 선택된 운 영역 -->
+            <div class="selected-yun-container" id="selected-yun-container">
+                <table class="bazi-table yun-table" id="yue-yun-table">
+                    <thead><tr><th>월운</th></tr></thead>
+                    <tbody>
+                        <tr><td>
+                            <div class="shipsin-top" id="yue-yun-gan-ship">-</div>
+                            <span class="char-box" id="yue-yun-gan">-</span>
+                        </td></tr>
+                        <tr><td>
+                            <span class="char-box" id="yue-yun-zhi">-</span>
+                            <div class="shipsin-bottom" id="yue-yun-zhi-ship">-</div>
+                        </td></tr>
+                    </tbody>
+                </table>
+                <table class="bazi-table yun-table" id="nian-yun-table">
+                    <thead><tr><th>세운</th></tr></thead>
+                    <tbody>
+                        <tr><td>
+                            <div class="shipsin-top" id="nian-yun-gan-ship">-</div>
+                            <span class="char-box" id="nian-yun-gan">-</span>
+                        </td></tr>
+                        <tr><td>
+                            <span class="char-box" id="nian-yun-zhi">-</span>
+                            <div class="shipsin-bottom" id="nian-yun-zhi-ship">-</div>
+                        </td></tr>
+                    </tbody>
+                </table>
+                <table class="bazi-table yun-table" id="da-yun-table">
+                    <thead><tr><th>대운</th></tr></thead>
+                    <tbody>
+                        <tr><td>
+                            <div class="shipsin-top" id="da-yun-gan-ship">-</div>
+                            <span class="char-box" id="da-yun-gan">-</span>
+                        </td></tr>
+                        <tr><td>
+                            <span class="char-box" id="da-yun-zhi">-</span>
+                            <div class="shipsin-bottom" id="da-yun-zhi-ship">-</div>
+                        </td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 사주 팔자 원국 표 -->
+            <div class="bazi-table-container">
+                <table class="bazi-table">
+                    <thead>
+                        <tr>
+                            <th>시주(時)</th>
+                            <th>일주(日)</th>
+                            <th>월주(月)</th>
+                            <th>년주(年)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="shipsin-top" id="time-gan-ship">-</div>
+                                <span class="char-box" id="time-gan">-</span>
+                            </td>
+                            <td>
+                                <div class="shipsin-top day-master-text" id="day-gan-ship">일간</div>
+                                <span class="char-box" id="day-gan">-</span>
+                            </td>
+                            <td>
+                                <div class="shipsin-top" id="month-gan-ship">-</div>
+                                <span class="char-box" id="month-gan">-</span>
+                            </td>
+                            <td>
+                                <div class="shipsin-top" id="year-gan-ship">-</div>
+                                <span class="char-box" id="year-gan">-</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="char-box" id="time-zhi">-</span>
+                                <div class="shipsin-bottom" id="time-zhi-ship">-</div>
+                            </td>
+                            <td>
+                                <span class="char-box" id="day-zhi">-</span>
+                                <div class="shipsin-bottom" id="day-zhi-ship">-</div>
+                            </td>
+                            <td>
+                                <span class="char-box" id="month-zhi">-</span>
+                                <div class="shipsin-bottom" id="month-zhi-ship">-</div>
+                            </td>
+                            <td>
+                                <span class="char-box" id="year-zhi">-</span>
+                                <div class="shipsin-bottom" id="year-zhi-ship">-</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="yun-section" id="dayun-section">
+            <div class="yun-title">대 운 (大 運)</div>
+            <div class="yun-container" id="dayun-list"></div>
+        </div>
+
+        <div class="yun-section" id="nianyun-section" style="display: none;">
+            <div class="yun-title" id="nianyun-title">세 운 (歲 運)</div>
+            <div class="yun-container" id="nianyun-list"></div>
+        </div>
+
+        <div class="yun-section" id="yueyun-section" style="display: none;">
+            <div class="yun-title" id="yueyun-title">월 운 (月 運)</div>
+            <div class="yun-container" id="yueyun-list"></div>
+        </div>
+    </div>
+
+    <!-- 추가된 의견 보내기 영역 -->
+    <div class="feedback-section">
+        <p style="font-size: 0.95rem; color: var(--text-color); margin-bottom: 12px;">더 나은 만세력 서비스를 위해 고객님의 소중한 의견을 들려주세요.</p>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeptz9WEaZO_LTYRduXENaHFIwlUB0IqjSCq7pqzFBUKAhcWQ/viewform?usp=publish-editor" target="_blank" class="feedback-btn">
+            의견 보내기
+        </a>
+    </div>
+
+</div>
+
+<script>
+    let globalDaYunArr = []; 
+    let globalDayGan = ""; 
+    let globalExactBaseAge = 0; 
+    let globalBirthYear = 0; 
+
+    window.onload = function() {
+        const yearSelect = document.getElementById('year');
+        const monthSelect = document.getElementById('month');
+        const daySelect = document.getElementById('day');
+        const currentYear = new Date().getFullYear();
+        
+        for (let i = currentYear + 10; i >= 1900; i--) yearSelect.add(new Option(i + '년', i));
+        for (let i = 1; i <= 12; i++) monthSelect.add(new Option(i.toString().padStart(2, '0') + '월', i));
+        for (let i = 1; i <= 31; i++) daySelect.add(new Option(i.toString().padStart(2, '0') + '일', i));
+        
+        yearSelect.value = 1980; 
+    };
+
+    function toggleTimeInput() {
+        const timeInput = document.getElementById('birth-time');
+        const isUnknown = document.getElementById('unknown-time').checked;
+        timeInput.disabled = isUnknown;
+        timeInput.style.opacity = isUnknown ? '0.5' : '1';
+        if(isUnknown) timeInput.value = '';
+    }
+
+    function getElementClass(char) {
+        if ("甲乙寅卯".includes(char)) return "el-wood";
+        if ("丙丁巳午".includes(char)) return "el-fire";
+        if ("戊己辰戌丑未".includes(char)) return "el-earth";
+        if ("庚辛申酉".includes(char)) return "el-metal";
+        if ("壬癸亥子".includes(char)) return "el-water";
+        return "el-unknown";
+    }
+
+    function getShipsin(dayGan, targetChar) {
+        if (!dayGan || targetChar === "?" || targetChar === "-") return "-";
+        const stems = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+        const zhiToGan = {
+            "子": "癸", "丑": "己", "寅": "甲", "卯": "乙", "辰": "戊", "巳": "丙",
+            "午": "丁", "未": "己", "申": "庚", "酉": "辛", "戌": "戊", "亥": "壬"
+        };
+
+        let dIdx = stems.indexOf(dayGan);
+        if(dIdx === -1) return "-";
+        let dE = Math.floor(dIdx / 2); 
+        let dYy = dIdx % 2;            
+
+        let tGan = targetChar;
+        if (zhiToGan[targetChar]) tGan = zhiToGan[targetChar];
+
+        let tIdx = stems.indexOf(tGan);
+        if(tIdx === -1) return "-";
+        let tE = Math.floor(tIdx / 2);
+        let tYy = tIdx % 2;
+
+        let diff = (tE - dE + 5) % 5;
+        let sameYy = (dYy === tYy);
+
+        if (diff === 0) return sameYy ? "비견" : "겁재";
+        if (diff === 1) return sameYy ? "식신" : "상관";
+        if (diff === 2) return sameYy ? "편재" : "정재";
+        if (diff === 3) return sameYy ? "편관" : "정관";
+        if (diff === 4) return sameYy ? "편인" : "정인";
+        
+        return "-";
+    }
+
+    function setCharAndColor(elementId, char) {
+        const el = document.getElementById(elementId);
+        el.innerText = char;
+        el.className = `char-box ${getElementClass(char)}`;
+    }
+
+    function resetYunDisplays() {
+        document.getElementById('da-yun-table').style.display = 'none';
+        document.getElementById('nian-yun-table').style.display = 'none';
+        document.getElementById('yue-yun-table').style.display = 'none';
+        document.getElementById('nianyun-section').style.display = 'none';
+        document.getElementById('yueyun-section').style.display = 'none';
+        document.getElementById('dayun-info').innerText = '';
+    }
+
+    function calculateSaju() {
+        try {
+            resetYunDisplays(); 
+
+            // 이름 데이터 가져오기 (출력 문구 연동용)
+            const userName = document.getElementById('user-name').value.trim();
+            const namePrefix = userName ? `[${userName}님] ` : "";
+
+            const year = parseInt(document.getElementById('year').value);
+            globalBirthYear = year; 
+            const month = parseInt(document.getElementById('month').value);
+            const day = parseInt(document.getElementById('day').value);
+            let timeVal = document.getElementById('birth-time').value;
+            const isUnknownTime = document.getElementById('unknown-time').checked;
+            const calType = document.querySelector('input[name="calendar-type"]:checked').value;
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const zishiType = document.querySelector('input[name="zishi-type"]:checked').value;
+
+            let hour = 12, min = 0; 
+            if (!isUnknownTime) {
+                if (!timeVal) { alert("시간을 입력하거나 '시간 모름'을 체크해 주세요."); return; }
+                hour = parseInt(timeVal.split(':')[0]);
+                min = parseInt(timeVal.split(':')[1]);
+            }
+
+            let targetSolar = calType === 'solar' 
+                ? Solar.fromYmdHms(year, month, day, hour, min, 0)
+                : Lunar.fromYmdHms(year, month, day, hour, min, 0).getSolar();
+
+            let adjustedDate = new Date(targetSolar.getYear(), targetSolar.getMonth() - 1, targetSolar.getDay(), targetSolar.getHour(), targetSolar.getMinute());
+            if (!isUnknownTime) adjustedDate.setMinutes(adjustedDate.getMinutes() - 30);
+
+            let finalSolar = Solar.fromDate(adjustedDate);
+            let finalLunar = finalSolar.getLunar();
+            let bazi = finalLunar.getEightChar();
+            
+            if (zishiType === 'traditional') {
+                bazi.setSect(2);
+            } else {
+                bazi.setSect(1); 
+            }
+
+            let yGanZhi = bazi.getYear();
+            let mGanZhi = bazi.getMonth();
+            let dGanZhi = bazi.getDay();
+            let tGanZhi = isUnknownTime ? "??" : bazi.getTime();
+
+            if (zishiType === 'inshi' && !isUnknownTime) {
+                let localHour = adjustedDate.getHours();
+                if (localHour >= 0 && localHour < 3) {
+                    let prevDate = new Date(adjustedDate.getTime() - 24 * 60 * 60 * 1000);
+                    let prevBazi = Solar.fromDate(prevDate).getLunar().getEightChar();
+                    prevBazi.setSect(1);
+                    dGanZhi = prevBazi.getDay();
+                }
+            }
+
+            globalDayGan = dGanZhi.charAt(0);
+
+            setCharAndColor('year-gan', yGanZhi.charAt(0)); setCharAndColor('year-zhi', yGanZhi.charAt(1));
+            setCharAndColor('month-gan', mGanZhi.charAt(0)); setCharAndColor('month-zhi', mGanZhi.charAt(1));
+            setCharAndColor('day-gan', dGanZhi.charAt(0)); setCharAndColor('day-zhi', dGanZhi.charAt(1));
+            setCharAndColor('time-gan', tGanZhi.charAt(0)); setCharAndColor('time-zhi', tGanZhi.charAt(1));
+
+            document.getElementById('year-gan-ship').innerText = getShipsin(globalDayGan, yGanZhi.charAt(0));
+            document.getElementById('year-zhi-ship').innerText = getShipsin(globalDayGan, yGanZhi.charAt(1));
+            document.getElementById('month-gan-ship').innerText = getShipsin(globalDayGan, mGanZhi.charAt(0));
+            document.getElementById('month-zhi-ship').innerText = getShipsin(globalDayGan, mGanZhi.charAt(1));
+            document.getElementById('day-gan-ship').innerText = "일간"; 
+            document.getElementById('day-zhi-ship').innerText = getShipsin(globalDayGan, dGanZhi.charAt(1));
+            document.getElementById('time-gan-ship').innerText = getShipsin(globalDayGan, tGanZhi.charAt(0));
+            document.getElementById('time-zhi-ship').innerText = getShipsin(globalDayGan, tGanZhi.charAt(1));
+
+            let genderText = gender === 'male' ? "乾命(남성)" : "坤命(여성)";
+            // 이름 데이터(namePrefix)를 안내 문구에 통합
+            document.getElementById('calc-info').innerText = isUnknownTime ? `${namePrefix}[${genderText}] 시간 모름` : `${namePrefix}[${genderText}] 보정: ${finalSolar.getHour()}시${finalSolar.getMinute()}분 기준`;
+
+            const genderCode = gender === 'male' ? 1 : 0;
+            const yun = bazi.getYun(genderCode);
+            globalDaYunArr = yun.getDaYun(); 
+            
+            const startSolar = yun.getStartSolar();
+            const startStr = `${startSolar.getYear()}년 ${startSolar.getMonth()}월 ${startSolar.getDay()}일`;
+            
+            globalExactBaseAge = yun.getStartYear() + (yun.getStartMonth() / 12) + (yun.getStartDay() / 365);
+            document.getElementById('dayun-info').innerText = `[교운일] 첫 대운 시작일: ${startStr} (정확한 대운수: ${globalExactBaseAge.toFixed(2)})`;
+
+            const dayunListContainer = document.getElementById('dayun-list');
+            dayunListContainer.innerHTML = ''; 
+
+            for (let i = 9; i >= 1; i--) {
+                let dy = globalDaYunArr[i];
+                if (!dy) continue; 
+                let gan = dy.getGanZhi().charAt(0);
+                let zhi = dy.getGanZhi().charAt(1);
+
+                let shipGan = getShipsin(globalDayGan, gan);
+                let shipZhi = getShipsin(globalDayGan, zhi);
+
+                let exactAgeNum = globalExactBaseAge + (i - 1) * 10;
+                let displayAge = (i === 1) ? exactAgeNum.toFixed(2) : Math.round(exactAgeNum);
+
+                let dayunHtml = `
+                    <div class="yun-item dayun-item" id="dayun-idx-${i}" onclick="selectDaYun(${i})">
+                        <div class="yun-age">${displayAge}대</div>
+                        <div class="shipsin-top">${shipGan}</div>
+                        <div class="char-box ${getElementClass(gan)}">${gan}</div>
+                        <div class="char-box ${getElementClass(zhi)}">${zhi}</div>
+                        <div class="shipsin-bottom">${shipZhi}</div>
+                    </div>
+                `;
+                dayunListContainer.insertAdjacentHTML('beforeend', dayunHtml);
+            }
+
+            document.getElementById('result-area').style.display = 'block';
+            document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
+
+        } catch (error) {
+            console.error("오류:", error); alert("계산 중 오류가 발생했습니다.");
+        }
+    }
+
+    function selectDaYun(index) {
+        document.querySelectorAll('.dayun-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`dayun-idx-${index}`).classList.add('active');
+
+        const dy = globalDaYunArr[index];
+        let gan = dy.getGanZhi().charAt(0);
+        let zhi = dy.getGanZhi().charAt(1);
+
+        setCharAndColor('da-yun-gan', gan);
+        document.getElementById('da-yun-gan-ship').innerText = getShipsin(globalDayGan, gan);
+        setCharAndColor('da-yun-zhi', zhi);
+        document.getElementById('da-yun-zhi-ship').innerText = getShipsin(globalDayGan, zhi);
+        
+        document.getElementById('da-yun-table').style.display = 'table';
+        document.getElementById('nian-yun-table').style.display = 'none'; 
+        document.getElementById('yue-yun-table').style.display = 'none';  
+        document.getElementById('yueyun-section').style.display = 'none'; 
+
+        const lnArr = dy.getLiuNian();
+        const nianContainer = document.getElementById('nianyun-list');
+        nianContainer.innerHTML = '';
+        
+        let exactAgeNum = globalExactBaseAge + (index - 1) * 10;
+        let displayAgeTitle = (index === 1) ? exactAgeNum.toFixed(2) : Math.round(exactAgeNum);
+        document.getElementById('nianyun-title').innerText = `${displayAgeTitle}대운의 세운 (歲 運)`;
+
+        for (let i = lnArr.length - 1; i >= 0; i--) {
+            let ln = lnArr[i];
+            let nGan = ln.getGanZhi().charAt(0);
+            let nZhi = ln.getGanZhi().charAt(1);
+            
+            let lnYear = ln.getYear();
+            let manNai = lnYear - globalBirthYear;
+
+            let shipGan = getShipsin(globalDayGan, nGan);
+            let shipZhi = getShipsin(globalDayGan, nZhi);
+
+            let nianHtml = `
+                <div class="yun-item nianyun-item" id="nianyun-idx-${i}" onclick="selectLiuNian(${index}, ${i})">
+                    <div class="yun-age" style="line-height: 1.25;">
+                        <div style="font-size: 0.8rem;">${manNai}세</div>
+                        <div style="font-size: 0.65rem; font-weight: 400; color: #555;">${lnYear}년</div>
+                    </div>
+                    <div class="shipsin-top">${shipGan}</div>
+                    <div class="char-box ${getElementClass(nGan)}">${nGan}</div>
+                    <div class="char-box ${getElementClass(nZhi)}">${nZhi}</div>
+                    <div class="shipsin-bottom">${shipZhi}</div>
+                </div>
+            `;
+            nianContainer.insertAdjacentHTML('beforeend', nianHtml);
+        }
+        document.getElementById('nianyun-section').style.display = 'block';
+    }
+
+    function selectLiuNian(daIndex, lnIndex) {
+        document.querySelectorAll('.nianyun-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`nianyun-idx-${lnIndex}`).classList.add('active');
+
+        const ln = globalDaYunArr[daIndex].getLiuNian()[lnIndex];
+        let gan = ln.getGanZhi().charAt(0);
+        let zhi = ln.getGanZhi().charAt(1);
+
+        setCharAndColor('nian-yun-gan', gan);
+        document.getElementById('nian-yun-gan-ship').innerText = getShipsin(globalDayGan, gan);
+        setCharAndColor('nian-yun-zhi', zhi);
+        document.getElementById('nian-yun-zhi-ship').innerText = getShipsin(globalDayGan, zhi);
+        
+        document.getElementById('nian-yun-table').style.display = 'table';
+        document.getElementById('yue-yun-table').style.display = 'none'; 
+
+        const lyArr = ln.getLiuYue();
+        const yueContainer = document.getElementById('yueyun-list');
+        yueContainer.innerHTML = '';
+        document.getElementById('yueyun-title').innerText = `${ln.getYear()}년의 월운 (月 運)`;
+
+        for (let i = lyArr.length - 1; i >= 0; i--) {
+            let ly = lyArr[i];
+            let mGan = ly.getGanZhi().charAt(0);
+            let mZhi = ly.getGanZhi().charAt(1);
+            
+            let monthNum = ly.getIndex() + 2; 
+            if (monthNum > 12) monthNum -= 12;
+
+            let shipGan = getShipsin(globalDayGan, mGan);
+            let shipZhi = getShipsin(globalDayGan, mZhi);
+
+            let yueHtml = `
+                <div class="yun-item yueyun-item" id="yueyun-idx-${i}" onclick="selectLiuYue(${daIndex}, ${lnIndex}, ${i})">
+                    <div class="yun-age">${monthNum}월</div>
+                    <div class="shipsin-top">${shipGan}</div>
+                    <div class="char-box ${getElementClass(mGan)}">${mGan}</div>
+                    <div class="char-box ${getElementClass(mZhi)}">${mZhi}</div>
+                    <div class="shipsin-bottom">${shipZhi}</div>
+                </div>
+            `;
+            yueContainer.insertAdjacentHTML('beforeend', yueHtml);
+        }
+        document.getElementById('yueyun-section').style.display = 'block';
+    }
+
+    function selectLiuYue(daIndex, lnIndex, lyIndex) {
+        document.querySelectorAll('.yueyun-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`yueyun-idx-${lyIndex}`).classList.add('active');
+
+        const ly = globalDaYunArr[daIndex].getLiuNian()[lnIndex].getLiuYue()[lyIndex];
+        let gan = ly.getGanZhi().charAt(0);
+        let zhi = ly.getGanZhi().charAt(1);
+
+        setCharAndColor('yue-yun-gan', gan);
+        document.getElementById('yue-yun-gan-ship').innerText = getShipsin(globalDayGan, gan);
+        setCharAndColor('yue-yun-zhi', zhi);
+        document.getElementById('yue-yun-zhi-ship').innerText = getShipsin(globalDayGan, zhi);
+        
+        document.getElementById('yue-yun-table').style.display = 'table';
+    }
+</script>
+
+</body>
+</html>
