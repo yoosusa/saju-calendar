@@ -152,7 +152,7 @@
         .el-earth { background-color: #E4B558; color: var(--text-color); }
         .el-metal { background-color: #F0F2F1; color: var(--text-color); }
         .el-water { background-color: #36424D; color: #ffffff; }
-        .el-unknown { background-color: #E2E6E4; color: #666666; }
+        .el-unknown { background-color: #E2E6E4; color: #666666; } 
 
         .char-box { display: block; padding: 12px 0; font-size: 1.6rem; font-weight: 700; text-align: center; }
         .shipsin-top, .shipsin-bottom { 
@@ -190,6 +190,11 @@
         .feedback-section { margin-top: 40px; padding: 25px 20px; background-color: #f8faf9; border-radius: 12px; border: 1px solid var(--border-color); text-align: center; }
         .feedback-btn { display: inline-block; padding: 12px 28px; background-color: #ffffff; color: var(--accent-color); text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 1rem; border: 1px solid var(--accent-color); transition: all 0.3s ease; }
         .feedback-btn:hover { background-color: var(--accent-color); color: #ffffff; }
+
+        .footer-info {
+            text-align: center; margin-top: 30px; padding-top: 20px;
+            font-size: 0.85rem; color: #888; line-height: 1.6;
+        }
 
         @media (max-width: 600px) {
             .container { padding: 20px 10px; }
@@ -344,13 +349,20 @@
         </div>
 
         <div class="action-btn-group" id="action-btn-group" style="display: none;">
-            <button class="action-btn today-btn" onclick="showTodayFortune()">오늘의 사주 확인하기</button>
+            <button class="action-btn today-btn" onclick="openTodayFortune()">오늘의 사주 확인하기</button>
             <button class="action-btn myoun-btn" onclick="openMyounRyeok()">묘운력 확인</button>
         </div>
 
+        <!-- 일진 섹션 -->
         <div class="result-sub-section" id="today-fortune-section">
-            <h3 class="section-title">오늘의 일진 (오늘의 사주)</h3>
-            <p id="today-date-info" style="font-size: 0.9rem; color: #666; margin-bottom: 15px;"></p>
+            <h3 class="section-title">선택일의 일진 (오늘의 사주)</h3>
+            
+            <div style="margin-bottom: 20px; margin-top: 15px; display: flex; justify-content: center; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <label style="font-weight: 600; font-size: 0.95rem; color: var(--text-color);">확인할 날짜:</label>
+                <input type="date" id="today-date" style="width: auto; margin-bottom: 0; padding: 10px;">
+                <button class="save-btn" style="padding: 10px 20px; font-size: 1rem; flex: none;" onclick="calculateTodayFortune()">일진 확인</button>
+            </div>
+
             <div style="padding-bottom: 10px;">
                 <table class="bazi-table" style="width: 100%;">
                     <colgroup>
@@ -359,11 +371,12 @@
                     </colgroup>
                     <thead>
                         <tr>
+                            <!-- 💡 !important를 주어 브라우저 표 간섭 현상을 완전히 차단하고 색상을 통일 -->
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">일운</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">월운</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">세운</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">대운</th>
-                            <th style="border-left: 2px solid var(--accent-color);">시주</th>
+                            <th style="border-left: 2px solid var(--accent-color) !important;">시주</th>
                             <th>일주</th>
                             <th>월주</th>
                             <th>년주</th>
@@ -409,6 +422,11 @@
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSeptz9WEaZO_LTYRduXENaHFIwlUB0IqjSCq7pqzFBUKAhcWQ/viewform?usp=publish-editor" target="_blank" class="feedback-btn">
             의견 보내기
         </a>
+    </div>
+
+    <div class="footer-info">
+        <p style="margin: 0;">email: yoosusa@naver.com</p>
+        <p style="margin: 0;">copyright ⓒ 유수사 all rights reserved.</p>
     </div>
 
 </div>
@@ -834,17 +852,31 @@
         document.getElementById('yue-yun-table').style.display = 'table';
     }
 
-    function showTodayFortune() {
+    function openTodayFortune() {
         if (!globalDayGan) { alert("먼저 명식을 확인해주세요."); return; }
-        
         document.getElementById('myoun-ryeok-section').style.display = 'none';
 
-        const today = new Date();
-        const todayYear = today.getFullYear();
-        const todayMonth = today.getMonth() + 1;
-        const todayDate = today.getDate();
+        let today = new Date();
+        let yyyy = today.getFullYear();
+        let mm = String(today.getMonth() + 1).padStart(2, '0');
+        let dd = String(today.getDate()).padStart(2, '0');
+        document.getElementById('today-date').value = `${yyyy}-${mm}-${dd}`;
 
-        let todaySolar = Solar.fromDate(today);
+        let section = document.getElementById('today-fortune-section');
+        section.style.display = 'block';
+        section.scrollIntoView({ behavior: 'smooth' });
+
+        calculateTodayFortune();
+    }
+
+    function calculateTodayFortune() {
+        let dateStr = document.getElementById('today-date').value;
+        if(!dateStr) { alert("날짜를 선택해주세요."); return; }
+
+        let targetDate = new Date(dateStr);
+        let targetYear = targetDate.getFullYear();
+
+        let todaySolar = Solar.fromDate(targetDate);
         let todayLunar = todaySolar.getLunar();
         let todayBazi = todayLunar.getEightChar();
         
@@ -864,7 +896,7 @@
             let dy = globalDaYunArr[i];
             if (!dy) continue;
             let startY = dy.getStartYear();
-            if (todayYear >= startY && todayYear <= startY + 9) {
+            if (targetYear >= startY && targetYear <= startY + 9) {
                 currentDaYun = dy.getGanZhi();
                 break;
             }
@@ -891,7 +923,9 @@
             let shipGan = getShipsin(globalDayGan, gan); let shipZhi = getShipsin(globalDayGan, zhi);
             
             if(index === 5) shipGan = "일간"; 
-            let borderStyle = (index === 4) ? "border-left: 3px solid var(--accent-color);" : "";
+            
+            // 💡 자바스크립트 출력부에도 강제성(!important) 적용
+            let borderStyle = (index === 4) ? "border-left: 2px solid var(--accent-color) !important;" : "";
 
             htmlTop += `<td style="${borderStyle}"><div class="shipsin-top ${index===5?'day-master-text':''}">${shipGan}</div></td>`;
             htmlGan += `<td style="${borderStyle}"><span class="char-box ${getElementClass(gan)}">${gan}</span></td>`;
@@ -902,16 +936,10 @@
         htmlTop += "</tr>"; htmlGan += "</tr>"; htmlZhi += "</tr>"; htmlBot += "</tr>";
 
         document.getElementById('today-fortune-tbody').innerHTML = htmlTop + htmlGan + htmlZhi + htmlBot;
-        document.getElementById('today-date-info').innerText = `[${todayYear}년 ${todayMonth}월 ${todayDate}일 기준]`;
-        
-        let section = document.getElementById('today-fortune-section');
-        section.style.display = 'block';
-        section.scrollIntoView({ behavior: 'smooth' });
     }
 
     function openMyounRyeok() {
         if (!globalDayGan) { alert("먼저 명식을 확인해주세요."); return; }
-        
         document.getElementById('today-fortune-section').style.display = 'none';
         
         let today = new Date();
