@@ -141,11 +141,24 @@
         .bazi-table-container { width: 60%; }
         .selected-yun-container { width: 40%; display: flex; justify-content: flex-end; gap: 5px; }
         
+        /* 공통 표 스타일 */
         .bazi-table { width: 100%; table-layout: fixed; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border-radius: 8px; overflow: hidden; }
         .yun-table { width: 32%; display: none; }
-        .bazi-table th { font-size: 0.9rem; font-weight: 600; color: #666; padding-bottom: 8px; background-color: #fcfdfc; padding-top: 8px; }
+        
+        /* ✨ 표의 th(제목칸)와 td(내용칸) 테두리를 동일하게 부여하여 구조 통일 */
+        .bazi-table th { font-size: 0.9rem; font-weight: 600; color: #666; padding-bottom: 8px; padding-top: 8px; background-color: #fcfdfc; border: 1px solid var(--border-color); }
         .bazi-table td { padding: 0; border: 1px solid var(--border-color); vertical-align: middle; background-color: #ffffff; }
         .yun-table td { width: 100%; }
+
+        /* ✨ 오늘의 사주 테이블 좌우 구분선 강제 통일 (1px 얇은 선, 색상 변질 차단) */
+        #today-fortune-section .bazi-table th:nth-child(4),
+        #today-fortune-section .bazi-table td:nth-child(4) {
+            border-right: 1px solid var(--accent-color) !important;
+        }
+        #today-fortune-section .bazi-table th:nth-child(5),
+        #today-fortune-section .bazi-table td:nth-child(5) {
+            border-left: 1px solid var(--accent-color) !important;
+        }
 
         .el-wood { background-color: #5E9873; color: #ffffff; }
         .el-fire { background-color: #DE6C61; color: #ffffff; }
@@ -371,12 +384,12 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            <!-- 💡 !important를 주어 브라우저 표 간섭 현상을 완전히 차단하고 색상을 통일 -->
+                            <!-- 💡 자바스크립트에서 삽입하던 인라인 속성을 모두 제거하고 CSS만으로 완벽 통일 -->
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">일운</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">월운</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">세운</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">대운</th>
-                            <th style="border-left: 2px solid var(--accent-color) !important;">시주</th>
+                            <th>시주</th>
                             <th>일주</th>
                             <th>월주</th>
                             <th>년주</th>
@@ -703,7 +716,8 @@
             const dayunListContainer = document.getElementById('dayun-list');
             dayunListContainer.innerHTML = ''; 
 
-            for (let i = 9; i >= 1; i--) {
+            // ✅ 대운 10칸 렌더링 정상화 (10 -> 1 역순)
+            for (let i = 10; i >= 1; i--) {
                 let dy = globalDaYunArr[i];
                 if (!dy) continue; 
                 let gan = dy.getGanZhi().charAt(0);
@@ -892,7 +906,8 @@
         let tGanZhiDay = todayBazi.getDay();
 
         let currentDaYun = "--";
-        for (let i = 1; i <= 9; i++) {
+        // ✅ 대운 10칸 탐색 로직 정상화 (1~10)
+        for (let i = 1; i <= 10; i++) {
             let dy = globalDaYunArr[i];
             if (!dy) continue;
             let startY = dy.getStartYear();
@@ -924,13 +939,11 @@
             
             if(index === 5) shipGan = "일간"; 
             
-            // 💡 자바스크립트 출력부에도 강제성(!important) 적용
-            let borderStyle = (index === 4) ? "border-left: 2px solid var(--accent-color) !important;" : "";
-
-            htmlTop += `<td style="${borderStyle}"><div class="shipsin-top ${index===5?'day-master-text':''}">${shipGan}</div></td>`;
-            htmlGan += `<td style="${borderStyle}"><span class="char-box ${getElementClass(gan)}">${gan}</span></td>`;
-            htmlZhi += `<td style="${borderStyle}"><span class="char-box ${getElementClass(zhi)}">${zhi}</span></td>`;
-            htmlBot += `<td style="${borderStyle}"><div class="shipsin-bottom">${shipZhi}</div></td>`;
+            // 💡 자바스크립트 출력 부분에서는 모든 인라인 테두리 코드를 삭제했습니다. (CSS가 완벽히 제어합니다)
+            htmlTop += `<td><div class="shipsin-top ${index===5?'day-master-text':''}">${shipGan}</div></td>`;
+            htmlGan += `<td><span class="char-box ${getElementClass(gan)}">${gan}</span></td>`;
+            htmlZhi += `<td><span class="char-box ${getElementClass(zhi)}">${zhi}</span></td>`;
+            htmlBot += `<td><div class="shipsin-bottom">${shipZhi}</div></td>`;
         });
 
         htmlTop += "</tr>"; htmlGan += "</tr>"; htmlZhi += "</tr>"; htmlBot += "</tr>";
@@ -965,7 +978,8 @@
         let currentIndex = 0;
         let currentDaYunGanZhi = "--";
         
-        for (let i = 1; i <= 9; i++) {
+        // ✅ 대운 10칸 탐색 로직 정상화 (1~10)
+        for (let i = 1; i <= 10; i++) {
             let dy = globalDaYunArr[i];
             if (!dy) continue;
             let startY = dy.getStartYear();
