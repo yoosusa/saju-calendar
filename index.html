@@ -3,7 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>유수사 만세력</title>
+    
+    <!-- 🚀 SEO 최적화 메타 태그 (구글, 네이버, 다음 검색엔진 타겟) -->
+    <title>유수사 만세력 - 정확한 사주명리 및 사주풀이 전문</title>
+    <meta name="description" content="명리학 전문가를 위한 정확하고 직관적인 사주 만세력. 유수사 만세력으로 사주, 사주명리, 묘운력, 오늘의 일진을 쉽고 빠르게 확인하세요.">
+    <meta name="keywords" content="만세력, 사주, 사주명리, 명리학, 사주풀이, 유수사">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 오픈 그래프 (블로그, 카카오톡 공유 시 예쁘게 보여지는 썸네일 정보) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="유수사 만세력 - 전문가용 사주 명리학 도구">
+    <meta property="og:description" content="정확하고 직관적인 사주풀이 만세력. 대운, 세운, 일진, 묘운력까지 한눈에 확인하세요.">
+    <meta property="og:site_name" content="유수사 만세력">
+
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
     
@@ -35,26 +47,57 @@
             background-color: var(--white-bg);
             width: 100%;
             max-width: 800px;
-            padding: 35px 25px;
+            padding: 30px 25px 40px; /* 상단 여백 약간 조정 */
             border-radius: 16px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04); 
             border: 1px solid var(--border-color);
         }
 
+        /* ✨ 1. 타이틀 영역 디자인 프리미엄 개편 */
         h1 {
-            text-align: center; font-size: 1.9rem; margin-bottom: 30px;
-            font-weight: 700; letter-spacing: 2px; 
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 15px;
-            color: var(--accent-color); 
+            text-align: center; 
+            font-size: 1.7rem; 
+            margin-bottom: 35px;
+            font-weight: 700; 
+            letter-spacing: 2px; 
+            background: linear-gradient(135deg, #2b3a32 0%, #386650 100%); /* 고급스러운 슬레이트 그린 그라데이션 */
+            color: #ffffff;
+            padding: 22px 15px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(43, 58, 50, 0.15); /* 부드러운 그림자 */
+            margin-top: 0;
         }
         .version-text {
-            display: block; font-size: 0.8rem; font-weight: 400; color: #888; 
-            letter-spacing: 0; margin-top: 8px;
+            display: block; 
+            width: fit-content;
+            margin: 10px auto 0;
+            font-size: 0.75rem; 
+            font-weight: 400; 
+            color: #d1e0d7; 
+            letter-spacing: 0; 
+            background-color: rgba(255, 255, 255, 0.15); /* 반투명 배경 알약 디자인 */
+            padding: 4px 12px;
+            border-radius: 20px;
         }
 
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-color); }
+        .form-group { margin-bottom: 25px; } /* 폼 간격 여유있게 확보 */
+        
+        /* ✨ 2. 입력 항목 레이블 세련된 블록 형태로 강조 */
+        .form-group > label:first-child { 
+            display: block; 
+            background-color: #f4f8f6; /* 아주 연하고 차분한 파스텔 배경 */
+            color: var(--text-color);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color); /* 좌측 포인트 컬러 라인 */
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            cursor: default;
+        }
         
         select, input[type="time"], input[type="text"], input[type="date"] {
             width: 100%; padding: 12px; border: 1px solid var(--border-color);
@@ -70,10 +113,11 @@
         .flex-row { display: flex; gap: 10px; }
         .flex-row select { flex: 1; }
         
-        .radio-group { display: flex; gap: 15px; flex-wrap: wrap; padding: 5px 0 10px 0; }
-        .radio-group label { display: flex; align-items: center; cursor: pointer; font-weight: 400;}
+        .radio-group { display: flex; gap: 15px; flex-wrap: wrap; padding: 5px 0 10px 5px; }
+        .radio-group label { display: flex; align-items: center; cursor: pointer; font-weight: 400; color: var(--text-color); }
         input[type="radio"], input[type="checkbox"] { margin-right: 6px; accent-color: var(--accent-color); }
-        .checkbox-group { display: flex; align-items: center; margin-top: -5px; margin-bottom: 15px; }
+        .checkbox-group { display: flex; align-items: center; margin-top: -5px; margin-bottom: 15px; padding-left: 5px; }
+        .checkbox-group label { cursor: pointer; font-size: 0.95rem; color: var(--text-color); }
 
         .btn-group { display: flex; gap: 10px; margin-top: 15px; }
         .submit-btn {
@@ -141,20 +185,12 @@
         .bazi-table-container { width: 60%; }
         .selected-yun-container { width: 40%; display: flex; justify-content: flex-end; gap: 5px; }
         
-        /* 공통 표 스타일 */
         .bazi-table { width: 100%; table-layout: fixed; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border-radius: 8px; overflow: hidden; }
         .yun-table { width: 32%; display: none; }
-        
-        /* ✨ 표의 th(제목칸)와 td(내용칸) 테두리를 동일하게 부여하여 구조 통일 */
-        .bazi-table th { font-size: 0.9rem; font-weight: 600; color: #666; padding-bottom: 8px; padding-top: 8px; background-color: #fcfdfc; border: 1px solid var(--border-color); }
+        .bazi-table th { font-size: 0.9rem; font-weight: 600; color: #666; padding-bottom: 8px; background-color: #fcfdfc; padding-top: 8px; border: 1px solid var(--border-color); }
         .bazi-table td { padding: 0; border: 1px solid var(--border-color); vertical-align: middle; background-color: #ffffff; }
         .yun-table td { width: 100%; }
 
-        /* ✨ 오늘의 사주 테이블 좌우 구분선 강제 통일 (1px 얇은 선, 색상 변질 차단) */
-        #today-fortune-section .bazi-table th:nth-child(4),
-        #today-fortune-section .bazi-table td:nth-child(4) {
-            border-right: 1px solid var(--accent-color) !important;
-        }
         #today-fortune-section .bazi-table th:nth-child(5),
         #today-fortune-section .bazi-table td:nth-child(5) {
             border-left: 1px solid var(--accent-color) !important;
@@ -209,8 +245,11 @@
             font-size: 0.85rem; color: #888; line-height: 1.6;
         }
 
+        /* ✨ 모바일 최적화 대응 */
         @media (max-width: 600px) {
-            .container { padding: 20px 10px; }
+            .container { padding: 20px 15px 30px; }
+            h1 { font-size: 1.5rem; padding: 18px 10px; } /* 모바일 타이틀 사이즈 최적화 */
+            
             .result-top-flex { gap: 5px; }
             .char-box { font-size: 1.1rem !important; padding: 5px 0 !important; }
             .shipsin-top, .shipsin-bottom { font-size: 0.65rem !important; padding: 3px 0 !important; letter-spacing: -1px; }
@@ -229,7 +268,7 @@
 <body>
 
 <div class="container">
-    <h1>유수사 만세력 <span class="version-text">Ver. 0.9(2026.05.01.)</span></h1>
+    <h1>유수사 만세력 <span class="version-text">Ver. 0.91(2026.05.03)</span></h1>
 
     <div class="form-group">
         <label>이름 (선택)</label>
@@ -384,12 +423,11 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            <!-- 💡 자바스크립트에서 삽입하던 인라인 속성을 모두 제거하고 CSS만으로 완벽 통일 -->
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">일운</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">월운</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">세운</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">대운</th>
-                            <th>시주</th>
+                            <th style="border-left: 1px solid var(--accent-color) !important;">시주</th>
                             <th>일주</th>
                             <th>월주</th>
                             <th>년주</th>
@@ -716,7 +754,7 @@
             const dayunListContainer = document.getElementById('dayun-list');
             dayunListContainer.innerHTML = ''; 
 
-            // ✅ 대운 10칸 렌더링 정상화 (10 -> 1 역순)
+            // 🚀 대운 10칸 렌더링 정상화 적용
             for (let i = 10; i >= 1; i--) {
                 let dy = globalDaYunArr[i];
                 if (!dy) continue; 
@@ -906,7 +944,7 @@
         let tGanZhiDay = todayBazi.getDay();
 
         let currentDaYun = "--";
-        // ✅ 대운 10칸 탐색 로직 정상화 (1~10)
+        // 🚀 대운 검색 10칸(1~10)으로 확장 적용
         for (let i = 1; i <= 10; i++) {
             let dy = globalDaYunArr[i];
             if (!dy) continue;
@@ -939,7 +977,7 @@
             
             if(index === 5) shipGan = "일간"; 
             
-            // 💡 자바스크립트 출력 부분에서는 모든 인라인 테두리 코드를 삭제했습니다. (CSS가 완벽히 제어합니다)
+            // 인라인 스타일 제거 (CSS에서 깔끔하게 제어)
             htmlTop += `<td><div class="shipsin-top ${index===5?'day-master-text':''}">${shipGan}</div></td>`;
             htmlGan += `<td><span class="char-box ${getElementClass(gan)}">${gan}</span></td>`;
             htmlZhi += `<td><span class="char-box ${getElementClass(zhi)}">${zhi}</span></td>`;
@@ -978,7 +1016,7 @@
         let currentIndex = 0;
         let currentDaYunGanZhi = "--";
         
-        // ✅ 대운 10칸 탐색 로직 정상화 (1~10)
+        // 🚀 대운 검색 10칸(1~10)으로 확장 적용
         for (let i = 1; i <= 10; i++) {
             let dy = globalDaYunArr[i];
             if (!dy) continue;
