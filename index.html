@@ -207,12 +207,14 @@
         .bazi-table-container { width: 60%; }
         .selected-yun-container { width: 40%; display: flex; justify-content: flex-end; gap: 5px; }
         
+        /* 공통 표 스타일 */
         .bazi-table { width: 100%; table-layout: fixed; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border-radius: 8px; overflow: hidden; }
         .yun-table { width: 32%; display: none; }
         .bazi-table th { font-size: 0.9rem; font-weight: 600; color: #666; padding-bottom: 8px; background-color: #fcfdfc; padding-top: 8px; border: 1px solid var(--border-color); }
         .bazi-table td { padding: 0; border: 1px solid var(--border-color); vertical-align: middle; background-color: #ffffff; }
         .yun-table td { width: 100%; }
 
+        /* 오늘의 사주 테이블 좌우 구분선 */
         #today-fortune-section .bazi-table th:nth-child(5),
         #today-fortune-section .bazi-table td:nth-child(5) {
             border-left: 1px solid var(--accent-color) !important;
@@ -514,7 +516,7 @@
     let globalExactBaseAge = 0; 
     let globalBirthYear = 0; 
     let globalOriginalSaju = { y: "", m: "", d: "", t: "" }; 
-    let globalAdjustedBirthDate = null; 
+    let globalRawBirthDate = null; 
     const STORAGE_KEY = 'yususah_saju_list';
 
     const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
@@ -720,10 +722,10 @@
                 ? Solar.fromYmdHms(year, month, day, hour, min, 0)
                 : Lunar.fromYmdHms(year, month, day, hour, min, 0).getSolar();
 
-            let adjustedDate = new Date(targetSolar.getYear(), targetSolar.getMonth() - 1, targetSolar.getDay(), targetSolar.getHour(), targetSolar.getMinute());
+            globalRawBirthDate = new Date(targetSolar.getYear(), targetSolar.getMonth() - 1, targetSolar.getDay(), targetSolar.getHour(), targetSolar.getMinute());
+
+            let adjustedDate = new Date(globalRawBirthDate);
             if (!isUnknownTime) adjustedDate.setMinutes(adjustedDate.getMinutes() - 30);
-            
-            globalAdjustedBirthDate = new Date(adjustedDate); 
 
             let finalSolar = Solar.fromDate(adjustedDate);
             let finalLunar = finalSolar.getLunar();
@@ -982,6 +984,7 @@
             }
         }
         
+        // ✨ 오늘의 사주: 첫 대운 시작 이전이면 사주원국의 월주 표시 로직 안전하게 수정
         if (currentDaYun === "--") {
             if (globalDaYunArr[1] && targetYear < globalDaYunArr[1].getStartYear()) {
                 currentDaYun = globalOriginalSaju.m; 
@@ -1039,7 +1042,7 @@
         calculateMyounRyeok();
     }
 
-    function getAdvancedMyounryeokPillar(originalGanZhi, elapsedMs, firstChangeMs, intervalMs) {
+    function getAdvancedMyounryeokPillar(originalGanZhi, elapsedMs, firstChangeMs, intervalMs, isForward) {
         if (originalGanZhi === "??" || originalGanZhi === "--") return originalGanZhi;
         
         let totalChanges = 0;
@@ -1047,14 +1050,17 @@
             let remainingMs = elapsedMs - firstChangeMs;
             totalChanges = 1 + Math.floor(remainingMs / intervalMs);
         }
-        if (totalChanges < 0) totalChanges = 0;
+        if (totalChanges === 0) return originalGanZhi;
         
         let ganIdx = STEMS.indexOf(originalGanZhi.charAt(0));
         let zhiIdx = BRANCHES.indexOf(originalGanZhi.charAt(1));
         
-        let newGanIdx = (ganIdx + totalChanges) % 10;
+        let direction = isForward ? 1 : -1;
+        
+        let newGanIdx = (ganIdx + (totalChanges * direction)) % 10;
         if (newGanIdx < 0) newGanIdx += 10;
-        let newZhiIdx = (zhiIdx + totalChanges) % 12;
+        
+        let newZhiIdx = (zhiIdx + (totalChanges * direction)) % 12;
         if (newZhiIdx < 0) newZhiIdx += 12;
         
         return STEMS[newGanIdx] + BRANCHES[newZhiIdx];
@@ -1113,51 +1119,82 @@
         let dyYearGanZhi = STEMS[newGanIdx] + BRANCHES[newZhiIdx];
         if (currentIndex === 0) dyYearGanZhi = globalOriginalSaju.y;
 
-        let dyMonthGanZhi = "--"; 
-        if (currentIndex > 0) {
-            dyMonthGanZhi = currentDaYunGanZhi;
-        } else {
-            dyMonthGanZhi = globalOriginalSaju.m;
-        }
+        let dyMonthGanZhi = currentDaYunGanZhi;
 
         let dyDayGanZhi = "--";
         let dyTimeGanZhi = "--";
 
-        if (globalAdjustedBirthDate) {
-            let birthTimeMs = globalAdjustedBirthDate.getTime();
+        if (globalRawBirthDate) {
+            let birthTimeMs = globalRawBirthDate.getTime();
             let targetDateObj = new Date(dateStr);
             targetDateObj.setHours(12, 0, 0, 0); 
             let elapsedMs = targetDateObj.getTime() - birthTimeMs;
 
-            let nextInshi = new Date(globalAdjustedBirthDate);
-            nextInshi.setHours(3, 30, 0, 0);
-            if (nextInshi.getTime() <= birthTimeMs) {
-                nextInshi.setDate(nextInshi.getDate() + 1);
-            }
-            let diffMsToInshi = nextInshi.getTime() - birthTimeMs;
-            let hoursToInshi = diffMsToInshi / (1000 * 60 * 60);
-            
-            let firstDayChangeMs = hoursToInshi * 5 * 24 * 60 * 60 * 1000; 
-            let dayIntervalMs = 120 * 24 * 60 * 60 * 1000;
-            
-            dyDayGanZhi = getAdvancedMyounryeokPillar(globalOriginalSaju.d, elapsedMs, firstDayChangeMs, dayIntervalMs);
-
-            let isUnknownTime = document.getElementById('unknown-time').checked;
-            if (isUnknownTime) {
-                dyTimeGanZhi = "??";
+            if (elapsedMs < 0) {
+                dyDayGanZhi = globalOriginalSaju.d;
+                dyTimeGanZhi = globalOriginalSaju.t;
             } else {
-                let nextTimeBoundary = new Date(globalAdjustedBirthDate);
-                let h = nextTimeBoundary.getHours();
-                let nextH = (h % 2 === 0) ? h + 1 : h + 2;
-                nextTimeBoundary.setHours(nextH, 0, 0, 0);
+                let h = globalRawBirthDate.getHours();
+                let m = globalRawBirthDate.getMinutes();
+                let totalMinutes = h * 60 + m;
+                let inshiMinutes = 3 * 60 + 30; 
+
+                let prevInshi = new Date(globalRawBirthDate);
+                if (totalMinutes < inshiMinutes) {
+                    prevInshi.setDate(prevInshi.getDate() - 1);
+                }
+                prevInshi.setHours(3, 30, 0, 0);
+
+                let nextInshi = new Date(prevInshi);
+                nextInshi.setDate(nextInshi.getDate() + 1);
+
+                let firstDayChangeMs = 0;
+                if (isForward) {
+                    let diffToNext = nextInshi.getTime() - birthTimeMs;
+                    firstDayChangeMs = (diffToNext / (1000 * 60 * 60)) * 5 * 24 * 60 * 60 * 1000;
+                } else {
+                    let diffFromPrev = birthTimeMs - prevInshi.getTime();
+                    firstDayChangeMs = (diffFromPrev / (1000 * 60 * 60)) * 5 * 24 * 60 * 60 * 1000;
+                }
                 
-                let diffMsToNextTime = nextTimeBoundary.getTime() - birthTimeMs;
-                let hoursToNextTime = diffMsToNextTime / (1000 * 60 * 60);
-                
-                let firstTimeChangeMs = hoursToNextTime * 5 * 24 * 60 * 60 * 1000;
-                let timeIntervalMs = 10 * 24 * 60 * 60 * 1000; 
-                
-                dyTimeGanZhi = getAdvancedMyounryeokPillar(globalOriginalSaju.t, elapsedMs, firstTimeChangeMs, timeIntervalMs);
+                let dayIntervalMs = 120 * 24 * 60 * 60 * 1000;
+                dyDayGanZhi = getAdvancedMyounryeokPillar(globalOriginalSaju.d, elapsedMs, firstDayChangeMs, dayIntervalMs, isForward);
+
+                let isUnknownTime = document.getElementById('unknown-time').checked;
+                if (isUnknownTime) {
+                    dyTimeGanZhi = "??";
+                } else {
+                    let prevShiju = new Date(globalRawBirthDate);
+                    let startH = h;
+                    if (h % 2 === 0) {
+                        startH = h - 1;
+                        if (startH < 0) startH = 23;
+                    } else {
+                        if (m < 30) {
+                            startH = h - 2;
+                            if (startH < 0) startH += 24;
+                        }
+                    }
+                    prevShiju.setHours(startH, 30, 0, 0);
+                    if (h === 0 || (h === 1 && m < 30)) {
+                        prevShiju.setDate(prevShiju.getDate() - 1);
+                    }
+
+                    let nextShiju = new Date(prevShiju);
+                    nextShiju.setHours(prevShiju.getHours() + 2);
+
+                    let firstTimeChangeMs = 0;
+                    if (isForward) {
+                        let diffToNext = nextShiju.getTime() - birthTimeMs;
+                        firstTimeChangeMs = (diffToNext / (1000 * 60 * 60)) * 5 * 24 * 60 * 60 * 1000;
+                    } else {
+                        let diffFromPrev = birthTimeMs - prevShiju.getTime();
+                        firstTimeChangeMs = (diffFromPrev / (1000 * 60 * 60)) * 5 * 24 * 60 * 60 * 1000;
+                    }
+                    
+                    let timeIntervalMs = 10 * 24 * 60 * 60 * 1000; 
+                    dyTimeGanZhi = getAdvancedMyounryeokPillar(globalOriginalSaju.t, elapsedMs, firstTimeChangeMs, timeIntervalMs, isForward);
+                }
             }
         } else {
             dyDayGanZhi = globalOriginalSaju.d;
