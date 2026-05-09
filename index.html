@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- 🚀 SEO 최적화 메타 태그 (구글, 네이버, 다음 검색엔진 타겟) -->
     <title>유수사 만세력 - 정확한 사주명리 및 사주풀이 전문</title>
     <meta name="description" content="명리학 전문가를 위한 정확하고 직관적인 사주 만세력. 유수사 만세력으로 사주, 사주명리, 묘운력, 오늘의 일진을 쉽고 빠르게 확인하세요.">
-    <!-- ✨ '유수사만세력' 키워드 추가 완료 -->
     <meta name="keywords" content="만세력, 사주, 사주명리, 명리학, 사주풀이, 유수사, 유수사만세력">
     <meta name="robots" content="index, follow">
     
-    <!-- 오픈 그래프 (블로그, 카카오톡 공유 시 예쁘게 보여지는 썸네일 정보) -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="유수사 만세력 - 전문가용 사주 명리학 도구">
     <meta property="og:description" content="정확하고 직관적인 사주풀이 만세력. 대운, 세운, 일진, 묘운력까지 한눈에 확인하세요.">
@@ -57,7 +54,7 @@
         h1 {
             text-align: center; 
             font-size: 1.7rem; 
-            margin-bottom: 35px;
+            margin-bottom: 25px;
             font-weight: 700; 
             letter-spacing: 2px; 
             background: linear-gradient(135deg, #2b3a32 0%, #386650 100%); 
@@ -78,6 +75,32 @@
             background-color: rgba(255, 255, 255, 0.15); 
             padding: 4px 12px;
             border-radius: 20px;
+        }
+
+        .notice-box {
+            background-color: #fcfaf5; 
+            border-left: 4px solid #E4B558; 
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+        }
+        .notice-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #DE6C61; 
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.5px;
+        }
+        .notice-content {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            line-height: 1.5;
+            margin: 0;
+            word-break: keep-all;
         }
 
         .form-group { margin-bottom: 25px; } 
@@ -184,14 +207,12 @@
         .bazi-table-container { width: 60%; }
         .selected-yun-container { width: 40%; display: flex; justify-content: flex-end; gap: 5px; }
         
-        /* 공통 표 스타일 */
         .bazi-table { width: 100%; table-layout: fixed; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border-radius: 8px; overflow: hidden; }
         .yun-table { width: 32%; display: none; }
         .bazi-table th { font-size: 0.9rem; font-weight: 600; color: #666; padding-bottom: 8px; background-color: #fcfdfc; padding-top: 8px; border: 1px solid var(--border-color); }
         .bazi-table td { padding: 0; border: 1px solid var(--border-color); vertical-align: middle; background-color: #ffffff; }
         .yun-table td { width: 100%; }
 
-        /* 오늘의 사주 테이블 좌우 구분선 강제 통일 (1px 얇은 선) */
         #today-fortune-section .bazi-table th:nth-child(5),
         #today-fortune-section .bazi-table td:nth-child(5) {
             border-left: 1px solid var(--accent-color) !important;
@@ -246,7 +267,6 @@
             font-size: 0.85rem; color: #888; line-height: 1.6;
         }
 
-        /* 모바일 최적화 대응 */
         @media (max-width: 600px) {
             .container { padding: 20px 15px 30px; }
             h1 { font-size: 1.5rem; padding: 18px 10px; } 
@@ -263,14 +283,19 @@
             .action-btn { width: 100%; padding: 12px 15px; font-size: 1rem; }
             .saved-name { font-size: 0.95rem; }
             .saved-detail { font-size: 0.7rem; }
+            .notice-box { padding: 14px 15px; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- ✨ 시각적인 타이틀에만 특수문자 적용 완료 -->
-    <h1>✦ 유수사 만세력 ✦ <span class="version-text">Ver. 0.91(2026.05.03)</span></h1>
+    <h1>✦ 유수사 만세력 ✦ <span class="version-text">Ver. 1.00(2026.05.09)</span></h1>
+
+    <div class="notice-box">
+        <div class="notice-title">📣 업데이트 안내</div>
+        <p class="notice-content">묘운력 기능에서 <strong>'대운의 일주'</strong>와 <strong>'대운의 시주'</strong>가 새롭게 완성되어 정확한 묘운력 산출이 가능해졌습니다.</p>
+    </div>
 
     <div class="form-group">
         <label>이름 (선택)</label>
@@ -407,7 +432,6 @@
             <button class="action-btn myoun-btn" onclick="openMyounRyeok()">묘운력 확인</button>
         </div>
 
-        <!-- 일진 섹션 -->
         <div class="result-sub-section" id="today-fortune-section">
             <h3 class="section-title">선택일의 일진 (오늘의 사주)</h3>
             
@@ -449,13 +473,14 @@
                 <button class="save-btn" style="padding: 10px 20px; font-size: 1rem; flex: none;" onclick="calculateMyounRyeok()">묘운력 산출</button>
             </div>
 
-            <div style="padding-bottom: 10px; max-width: 500px; margin: 0 auto;">
+            <div style="padding-bottom: 10px; max-width: 510px; margin: 0 auto;">
                 <table class="bazi-table" style="width: 100%;">
                     <colgroup>
-                        <col style="width: 33.33%;"><col style="width: 33.33%;"><col style="width: 33.33%;">
+                        <col style="width: 25%;"><col style="width: 25%;"><col style="width: 25%;"><col style="width: 25%;">
                     </colgroup>
                     <thead>
                         <tr>
+                            <th style="background-color: #e8f0ec; color: var(--accent-color);">대운의 시주</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">대운의 일주</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">대운의 월주</th>
                             <th style="background-color: #e8f0ec; color: var(--accent-color);">대운의 년주</th>
@@ -465,7 +490,6 @@
                     </tbody>
                 </table>
             </div>
-            <p style="font-size: 0.8rem; color: #888; margin-top: 10px;">* 대운의 일주는 다음 업데이트에서 적용됩니다.</p>
         </div>
 
     </div>
@@ -490,6 +514,7 @@
     let globalExactBaseAge = 0; 
     let globalBirthYear = 0; 
     let globalOriginalSaju = { y: "", m: "", d: "", t: "" }; 
+    let globalAdjustedBirthDate = null; 
     const STORAGE_KEY = 'yususah_saju_list';
 
     const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
@@ -697,6 +722,8 @@
 
             let adjustedDate = new Date(targetSolar.getYear(), targetSolar.getMonth() - 1, targetSolar.getDay(), targetSolar.getHour(), targetSolar.getMinute());
             if (!isUnknownTime) adjustedDate.setMinutes(adjustedDate.getMinutes() - 30);
+            
+            globalAdjustedBirthDate = new Date(adjustedDate); 
 
             let finalSolar = Solar.fromDate(adjustedDate);
             let finalLunar = finalSolar.getLunar();
@@ -954,8 +981,13 @@
                 break;
             }
         }
-        if (currentDaYun === "--" && globalDaYunArr[0]) {
-            currentDaYun = globalDaYunArr[0].getGanZhi(); 
+        
+        if (currentDaYun === "--") {
+            if (globalDaYunArr[1] && targetYear < globalDaYunArr[1].getStartYear()) {
+                currentDaYun = globalOriginalSaju.m; 
+            } else if (globalDaYunArr[10]) {
+                currentDaYun = globalDaYunArr[10].getGanZhi(); 
+            }
         }
 
         const dataArr = [
@@ -977,10 +1009,12 @@
             
             if(index === 5) shipGan = "일간"; 
 
-            htmlTop += `<td><div class="shipsin-top ${index===5?'day-master-text':''}">${shipGan}</div></td>`;
-            htmlGan += `<td><span class="char-box ${getElementClass(gan)}">${gan}</span></td>`;
-            htmlZhi += `<td><span class="char-box ${getElementClass(zhi)}">${zhi}</span></td>`;
-            htmlBot += `<td><div class="shipsin-bottom">${shipZhi}</div></td>`;
+            let borderStyle = (index === 4) ? "border-left: 1px solid var(--accent-color) !important;" : "";
+
+            htmlTop += `<td style="${borderStyle}"><div class="shipsin-top ${index===5?'day-master-text':''}">${shipGan}</div></td>`;
+            htmlGan += `<td style="${borderStyle}"><span class="char-box ${getElementClass(gan)}">${gan}</span></td>`;
+            htmlZhi += `<td style="${borderStyle}"><span class="char-box ${getElementClass(zhi)}">${zhi}</span></td>`;
+            htmlBot += `<td style="${borderStyle}"><div class="shipsin-bottom">${shipZhi}</div></td>`;
         });
 
         htmlTop += "</tr>"; htmlGan += "</tr>"; htmlZhi += "</tr>"; htmlBot += "</tr>";
@@ -1005,6 +1039,27 @@
         calculateMyounRyeok();
     }
 
+    function getAdvancedMyounryeokPillar(originalGanZhi, elapsedMs, firstChangeMs, intervalMs) {
+        if (originalGanZhi === "??" || originalGanZhi === "--") return originalGanZhi;
+        
+        let totalChanges = 0;
+        if (elapsedMs >= firstChangeMs) {
+            let remainingMs = elapsedMs - firstChangeMs;
+            totalChanges = 1 + Math.floor(remainingMs / intervalMs);
+        }
+        if (totalChanges < 0) totalChanges = 0;
+        
+        let ganIdx = STEMS.indexOf(originalGanZhi.charAt(0));
+        let zhiIdx = BRANCHES.indexOf(originalGanZhi.charAt(1));
+        
+        let newGanIdx = (ganIdx + totalChanges) % 10;
+        if (newGanIdx < 0) newGanIdx += 10;
+        let newZhiIdx = (zhiIdx + totalChanges) % 12;
+        if (newZhiIdx < 0) newZhiIdx += 12;
+        
+        return STEMS[newGanIdx] + BRANCHES[newZhiIdx];
+    }
+
     function calculateMyounRyeok() {
         let dateStr = document.getElementById('myoun-date').value;
         if(!dateStr) { alert("날짜를 선택해주세요."); return; }
@@ -1026,8 +1081,13 @@
             }
         }
         
-        if (currentIndex === 0 && globalDaYunArr[0]) {
-            currentDaYunGanZhi = globalDaYunArr[0].getGanZhi(); 
+        if (currentIndex === 0) {
+            if (globalDaYunArr[1] && targetYear < globalDaYunArr[1].getStartYear()) {
+                currentDaYunGanZhi = globalOriginalSaju.m; 
+            } else if (globalDaYunArr[10]) {
+                currentDaYunGanZhi = globalDaYunArr[10].getGanZhi();
+                currentIndex = 10; 
+            }
         }
 
         let gender = document.querySelector('input[name="gender"]:checked').value;
@@ -1051,13 +1111,61 @@
         if(newZhiIdx < 0) newZhiIdx += 12; 
         
         let dyYearGanZhi = STEMS[newGanIdx] + BRANCHES[newZhiIdx];
-        
         if (currentIndex === 0) dyYearGanZhi = globalOriginalSaju.y;
 
-        let dyMonthGanZhi = currentDaYunGanZhi;
-        let dyDayGanZhi = "--"; 
+        let dyMonthGanZhi = "--"; 
+        if (currentIndex > 0) {
+            dyMonthGanZhi = currentDaYunGanZhi;
+        } else {
+            dyMonthGanZhi = globalOriginalSaju.m;
+        }
+
+        let dyDayGanZhi = "--";
+        let dyTimeGanZhi = "--";
+
+        if (globalAdjustedBirthDate) {
+            let birthTimeMs = globalAdjustedBirthDate.getTime();
+            let targetDateObj = new Date(dateStr);
+            targetDateObj.setHours(12, 0, 0, 0); 
+            let elapsedMs = targetDateObj.getTime() - birthTimeMs;
+
+            let nextInshi = new Date(globalAdjustedBirthDate);
+            nextInshi.setHours(3, 30, 0, 0);
+            if (nextInshi.getTime() <= birthTimeMs) {
+                nextInshi.setDate(nextInshi.getDate() + 1);
+            }
+            let diffMsToInshi = nextInshi.getTime() - birthTimeMs;
+            let hoursToInshi = diffMsToInshi / (1000 * 60 * 60);
+            
+            let firstDayChangeMs = hoursToInshi * 5 * 24 * 60 * 60 * 1000; 
+            let dayIntervalMs = 120 * 24 * 60 * 60 * 1000;
+            
+            dyDayGanZhi = getAdvancedMyounryeokPillar(globalOriginalSaju.d, elapsedMs, firstDayChangeMs, dayIntervalMs);
+
+            let isUnknownTime = document.getElementById('unknown-time').checked;
+            if (isUnknownTime) {
+                dyTimeGanZhi = "??";
+            } else {
+                let nextTimeBoundary = new Date(globalAdjustedBirthDate);
+                let h = nextTimeBoundary.getHours();
+                let nextH = (h % 2 === 0) ? h + 1 : h + 2;
+                nextTimeBoundary.setHours(nextH, 0, 0, 0);
+                
+                let diffMsToNextTime = nextTimeBoundary.getTime() - birthTimeMs;
+                let hoursToNextTime = diffMsToNextTime / (1000 * 60 * 60);
+                
+                let firstTimeChangeMs = hoursToNextTime * 5 * 24 * 60 * 60 * 1000;
+                let timeIntervalMs = 10 * 24 * 60 * 60 * 1000; 
+                
+                dyTimeGanZhi = getAdvancedMyounryeokPillar(globalOriginalSaju.t, elapsedMs, firstTimeChangeMs, timeIntervalMs);
+            }
+        } else {
+            dyDayGanZhi = globalOriginalSaju.d;
+            dyTimeGanZhi = globalOriginalSaju.t;
+        }
 
         const dataArr = [
+            { label: '대운의 시주', gz: dyTimeGanZhi },
             { label: '대운의 일주', gz: dyDayGanZhi },
             { label: '대운의 월주', gz: dyMonthGanZhi },
             { label: '대운의 년주', gz: dyYearGanZhi }
@@ -1069,8 +1177,8 @@
             let gan = item.gz.charAt(0);
             let zhi = item.gz.charAt(1);
             
-            let shipGan = (gan === "-") ? "-" : getShipsin(globalDayGan, gan);
-            let shipZhi = (zhi === "-") ? "-" : getShipsin(globalDayGan, zhi);
+            let shipGan = (gan === "-" || gan === "?") ? "-" : getShipsin(globalDayGan, gan);
+            let shipZhi = (zhi === "-" || zhi === "?") ? "-" : getShipsin(globalDayGan, zhi);
             
             htmlTop += `<td><div class="shipsin-top">${shipGan}</div></td>`;
             htmlGan += `<td><span class="char-box ${getElementClass(gan)}">${gan}</span></td>`;
