@@ -207,14 +207,12 @@
         .bazi-table-container { width: 60%; }
         .selected-yun-container { width: 40%; display: flex; justify-content: flex-end; gap: 5px; }
         
-        /* 공통 표 스타일 */
         .bazi-table { width: 100%; table-layout: fixed; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border-radius: 8px; overflow: hidden; }
         .yun-table { width: 32%; display: none; }
         .bazi-table th { font-size: 0.9rem; font-weight: 600; color: #666; padding-bottom: 8px; background-color: #fcfdfc; padding-top: 8px; border: 1px solid var(--border-color); }
         .bazi-table td { padding: 0; border: 1px solid var(--border-color); vertical-align: middle; background-color: #ffffff; }
         .yun-table td { width: 100%; }
 
-        /* 오늘의 사주 테이블 좌우 구분선 */
         #today-fortune-section .bazi-table th:nth-child(5),
         #today-fortune-section .bazi-table td:nth-child(5) {
             border-left: 1px solid var(--accent-color) !important;
@@ -292,11 +290,11 @@
 <body>
 
 <div class="container">
-    <h1>✦ 유수사 만세력 ✦ <span class="version-text">Ver. 1.00(2026.05.09)</span></h1>
+    <h1>✦ 유수사 만세력 ✦ <span class="version-text">Ver. 1.10(2026.06.05)</span></h1>
 
     <div class="notice-box">
         <div class="notice-title">📣 업데이트 안내</div>
-        <p class="notice-content">묘운력 기능에서 <strong>'대운의 일주'</strong>와 <strong>'대운의 시주'</strong>가 새롭게 완성되어 정확한 묘운력 산출이 가능해졌습니다.</p>
+        <p class="notice-content">자시생 사주에서 일주 오류가 발생하는 부분을 개선하고, 명식 상단의 요약 정보 표시 기능을 새롭게 추가하였습니다.</p>
     </div>
 
     <div class="form-group">
@@ -361,8 +359,9 @@
     </div>
 
     <div id="result-area">
+        <div id="calc-info-area"></div>
+        
         <p id="dayun-info" style="font-size: 0.95rem; color: #e57373; margin-bottom: 5px; text-align: right; font-weight: 700;"></p>
-        <p id="calc-info" style="font-size: 0.85rem; color: #777; margin-bottom: 15px; text-align: right; margin-top: 0;"></p>
         
         <div class="result-top-flex">
             <div class="selected-yun-container" id="selected-yun-container">
@@ -522,7 +521,7 @@
     const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
     const BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 
-    window.onload = function() {
+    document.addEventListener('DOMContentLoaded', function() {
         const yearSelect = document.getElementById('year');
         const monthSelect = document.getElementById('month');
         const daySelect = document.getElementById('day');
@@ -532,9 +531,14 @@
         for (let i = 1; i <= 12; i++) monthSelect.add(new Option(i.toString().padStart(2, '0') + '월', i));
         for (let i = 1; i <= 31; i++) daySelect.add(new Option(i.toString().padStart(2, '0') + '일', i));
         
-        yearSelect.value = 1980; 
+        // ✨ 1. 기본 설정값 업데이트 반영 (1980.07.15 13:00)
+        yearSelect.value = "1980"; 
+        monthSelect.value = "7";
+        daySelect.value = "15";
+        document.getElementById('birth-time').value = "13:00";
+        
         loadSajuList();
-    };
+    });
 
     function toggleTimeInput() {
         const timeInput = document.getElementById('birth-time');
@@ -689,6 +693,9 @@
         document.getElementById('yueyun-section').style.display = 'none';
         document.getElementById('dayun-info').innerText = '';
         
+        // ✨ 요약창 초기화 처리
+        if(document.getElementById('calc-info-area')) document.getElementById('calc-info-area').innerHTML = ''; 
+        
         document.getElementById('action-btn-group').style.display = 'none';
         document.getElementById('today-fortune-section').style.display = 'none';
         document.getElementById('myoun-ryeok-section').style.display = 'none';
@@ -699,8 +706,6 @@
             resetYunDisplays(); 
 
             const userName = document.getElementById('user-name').value.trim();
-            const namePrefix = userName ? `[${userName}님] ` : "";
-
             const year = parseInt(document.getElementById('year').value);
             globalBirthYear = year; 
             const month = parseInt(document.getElementById('month').value);
@@ -739,16 +744,30 @@
 
             let yGanZhi = bazi.getYear();
             let mGanZhi = bazi.getMonth();
-            let dGanZhi = bazi.getDay();
             let tGanZhi = isUnknownTime ? "??" : bazi.getTime();
 
-            if (zishiType === 'inshi' && !isUnknownTime) {
-                let localHour = adjustedDate.getHours();
-                if (localHour >= 0 && localHour < 3) {
-                    let prevDate = new Date(adjustedDate.getTime() - 24 * 60 * 60 * 1000);
-                    let prevBazi = Solar.fromDate(prevDate).getLunar().getEightChar();
-                    prevBazi.setSect(1);
-                    dGanZhi = prevBazi.getDay();
+            let noonDate = new Date(globalRawBirthDate.getFullYear(), globalRawBirthDate.getMonth(), globalRawBirthDate.getDate(), 12, 0, 0);
+            let baseDayGanZhi = Solar.fromDate(noonDate).getLunar().getEightChar().getDay();
+            let dGanZhi = baseDayGanZhi;
+
+            if (!isUnknownTime) {
+                let totalMinutes = hour * 60 + min;
+
+                if (zishiType === 'traditional') {
+                    if (totalMinutes >= (23 * 60 + 30) && totalMinutes <= (23 * 60 + 59)) {
+                        let nextDaySolar = Solar.fromDate(new Date(noonDate.getTime() + 24 * 60 * 60 * 1000));
+                        dGanZhi = nextDaySolar.getLunar().getEightChar().getDay();
+                    }
+                } else if (zishiType === 'night-morning') {
+                    if (totalMinutes >= 0 && totalMinutes <= 29) {
+                        let prevDaySolar = Solar.fromDate(new Date(noonDate.getTime() - 24 * 60 * 60 * 1000));
+                        dGanZhi = prevDaySolar.getLunar().getEightChar().getDay();
+                    }
+                } else if (zishiType === 'inshi') {
+                    if (totalMinutes >= 0 && totalMinutes < (3 * 60 + 30)) {
+                        let prevDaySolar = Solar.fromDate(new Date(noonDate.getTime() - 24 * 60 * 60 * 1000));
+                        dGanZhi = prevDaySolar.getLunar().getEightChar().getDay();
+                    }
                 }
             }
 
@@ -769,8 +788,24 @@
             document.getElementById('time-gan-ship').innerText = getShipsin(globalDayGan, tGanZhi.charAt(0));
             document.getElementById('time-zhi-ship').innerText = getShipsin(globalDayGan, tGanZhi.charAt(1));
 
+            // ✨ 2. 상단 요약 정보 박스 생성 및 렌더링
             let genderText = gender === 'male' ? "乾命(남성)" : "坤命(여성)";
-            document.getElementById('calc-info').innerText = isUnknownTime ? `${namePrefix}[${genderText}] 시간 모름` : `${namePrefix}[${genderText}] 보정: ${finalSolar.getHour()}시${finalSolar.getMinute()}분 기준`;
+            let calTypeStr = calType === 'solar' ? '양력' : (calType === 'lunar-regular' ? '음력(평달)' : '음력(윤달)');
+            let zishiStr = zishiType === 'traditional' ? '전통 자시' : (zishiType === 'night-morning' ? '야자시/조자시' : '인시일수론');
+            let timeDisp = isUnknownTime ? "모름" : timeVal;
+            let nameDisp = userName ? `[${userName} 님]` : "[이름 없음]";
+
+            let infoHtml = `
+                <div style="text-align: left; background: #fcfdfc; padding: 15px 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 25px;">
+                    <div style="font-size: 1.15rem; font-weight: 700; color: var(--accent-color); margin-bottom: 10px;">${nameDisp} <span style="font-size: 0.95rem; color: var(--text-color); font-weight: 600;">${genderText}</span></div>
+                    <div style="font-size: 0.9rem; color: #444; display: flex; flex-wrap: wrap; gap: 15px; line-height: 1.4;">
+                        <span><strong style="color:#666;">생년월일:</strong> ${year}년 ${month}월 ${day}일 (${calTypeStr})</span>
+                        <span><strong style="color:#666;">태어난 시간:</strong> ${timeDisp}</span>
+                        <span><strong style="color:#666;">일주 기준:</strong> ${zishiStr}</span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('calc-info-area').innerHTML = infoHtml;
 
             const genderCode = gender === 'male' ? 1 : 0;
             const yun = bazi.getYun(genderCode);
@@ -984,7 +1019,6 @@
             }
         }
         
-        // ✨ 오늘의 사주: 첫 대운 시작 이전이면 사주원국의 월주 표시 로직 안전하게 수정
         if (currentDaYun === "--") {
             if (globalDaYunArr[1] && targetYear < globalDaYunArr[1].getStartYear()) {
                 currentDaYun = globalOriginalSaju.m; 
