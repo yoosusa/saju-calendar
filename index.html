@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <!-- 🚀 SEO 최적화 메타 태그 -->
     <title>유수사 만세력 - 정확한 사주명리 및 사주풀이 전문</title>
     <meta name="description" content="명리학 전문가를 위한 정확하고 직관적인 사주 만세력. 유수사 만세력으로 사주, 사주명리, 묘운력, 오늘의 일진을 쉽고 빠르게 확인하세요.">
     <meta name="keywords" content="만세력, 사주, 사주명리, 명리학, 사주풀이, 유수사, 유수사만세력">
     <meta name="robots" content="index, follow">
     
+    <!-- 오픈 그래프 -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="유수사 만세력 - 전문가용 사주 명리학 도구">
     <meta property="og:description" content="정확하고 직관적인 사주풀이 만세력. 대운, 세운, 일진, 묘운력까지 한눈에 확인하세요.">
@@ -290,13 +292,17 @@
 <body>
 
 <div class="container">
-    <h1>✦ 유수사 만세력 ✦ <span class="version-text">Ver. 1.20(2026.06.07)</span></h1>
+    <!-- ✨ 버전 표시 업데이트 -->
+    <h1>✦ 유수사 만세력 ✦ <span class="version-text">Ver. 1.40(2026.07.06)</span></h1>
 
+    <!-- ✨ 공지사항 업데이트 -->
     <div class="notice-box">
         <div class="notice-title">📣 업데이트 안내</div>
         <p class="notice-content">
-            오늘의 사주 확인하기의 대운이 바뀌는 시점을 1월 1일이 아닌, 교운일로 변경함.<br>
-            묘운력 확인에서 대운의 월주와 대운의 년주가 바뀌는 시점을 1월 1일이 아닌, 교운일로 변경함.
+            1. 양력-음력 교차 변환을 통한 사주명식 크로스체크 기능을 상단 요약 정보창에 추가하였습니다.<br>
+            2. 음력(윤달)로 생년월일을 입력할 경우, 사주명식에 오류가 발생하는 문제점을 해결함.<br>
+            3. 오늘의 사주 확인하기의 대운이 바뀌는 시점을 1월 1일이 아닌, 교운일로 변경함.<br>
+            4. 묘운력 확인에서 대운의 월주와 대운의 년주가 바뀌는 시점을 1월 1일이 아닌, 교운일로 변경함.
         </p>
     </div>
 
@@ -519,7 +525,7 @@
     let globalBirthYear = 0; 
     let globalOriginalSaju = { y: "", m: "", d: "", t: "" }; 
     let globalRawBirthDate = null; 
-    let globalGyounDate = null; // ✨ 교운일 정확한 계산을 위한 전역 변수 추가
+    let globalGyounDate = null; 
     const STORAGE_KEY = 'yususah_saju_list';
 
     const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
@@ -725,18 +731,37 @@
                 min = parseInt(timeVal.split(':')[1]);
             }
 
-            let targetSolar = calType === 'solar' 
-                ? Solar.fromYmdHms(year, month, day, hour, min, 0)
-                : Lunar.fromYmdHms(year, month, day, hour, min, 0).getSolar();
+            let targetSolar;
+            if (calType === 'solar') {
+                targetSolar = Solar.fromYmdHms(year, month, day, hour, min, 0);
+            } else if (calType === 'lunar-regular') {
+                targetSolar = Lunar.fromYmdHms(year, month, day, hour, min, 0).getSolar();
+            } else if (calType === 'lunar-leap') {
+                targetSolar = Lunar.fromYmdHms(year, -month, day, hour, min, 0).getSolar();
+            }
+
+            // ✨ 상단 정보창에 표시될 크로스체크 양력/음력 계산
+            let finalLunar = targetSolar.getLunar();
+            let displayInputStr = "";
+            let displayConvertedStr = "";
+
+            if (calType === 'solar') {
+                displayInputStr = `[입력] 양력: ${targetSolar.getYear()}년 ${targetSolar.getMonth()}월 ${targetSolar.getDay()}일`;
+                let leapStr = finalLunar.getMonth() < 0 ? "(윤달)" : "(평달)";
+                displayConvertedStr = `[변환] 음력${leapStr}: ${finalLunar.getYear()}년 ${Math.abs(finalLunar.getMonth())}월 ${finalLunar.getDay()}일`;
+            } else {
+                let leapStrInput = calType === 'lunar-leap' ? "(윤달)" : "(평달)";
+                displayInputStr = `[입력] 음력${leapStrInput}: ${year}년 ${month}월 ${day}일`;
+                displayConvertedStr = `[변환] 양력: ${targetSolar.getYear()}년 ${targetSolar.getMonth()}월 ${targetSolar.getDay()}일`;
+            }
 
             globalRawBirthDate = new Date(targetSolar.getYear(), targetSolar.getMonth() - 1, targetSolar.getDay(), targetSolar.getHour(), targetSolar.getMinute());
 
             let adjustedDate = new Date(globalRawBirthDate);
             if (!isUnknownTime) adjustedDate.setMinutes(adjustedDate.getMinutes() - 30);
 
-            let finalSolar = Solar.fromDate(adjustedDate);
-            let finalLunar = finalSolar.getLunar();
-            let bazi = finalLunar.getEightChar();
+            let finalSolarAdjusted = Solar.fromDate(adjustedDate);
+            let bazi = finalSolarAdjusted.getLunar().getEightChar();
             
             if (zishiType === 'traditional') {
                 bazi.setSect(2);
@@ -790,19 +815,27 @@
             document.getElementById('time-gan-ship').innerText = getShipsin(globalDayGan, tGanZhi.charAt(0));
             document.getElementById('time-zhi-ship').innerText = getShipsin(globalDayGan, tGanZhi.charAt(1));
 
+            // ✨ 상단 요약 정보 박스 (크로스체크 내역 포함 레이아웃 개선)
             let genderText = gender === 'male' ? "乾命(남성)" : "坤命(여성)";
-            let calTypeStr = calType === 'solar' ? '양력' : (calType === 'lunar-regular' ? '음력(평달)' : '음력(윤달)');
             let zishiStr = zishiType === 'traditional' ? '전통 자시' : (zishiType === 'night-morning' ? '야자시/조자시' : '인시일수론');
-            let timeDisp = isUnknownTime ? "모름" : timeVal;
+            let timeDisp = isUnknownTime ? "시간 모름" : timeVal;
             let nameDisp = userName ? `[${userName} 님]` : "[이름 없음]";
 
             let infoHtml = `
-                <div style="text-align: left; background: #fcfdfc; padding: 15px 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 25px;">
-                    <div style="font-size: 1.15rem; font-weight: 700; color: var(--accent-color); margin-bottom: 10px;">${nameDisp} <span style="font-size: 0.95rem; color: var(--text-color); font-weight: 600;">${genderText}</span></div>
-                    <div style="font-size: 0.9rem; color: #444; display: flex; flex-wrap: wrap; gap: 15px; line-height: 1.4;">
-                        <span><strong style="color:#666;">생년월일:</strong> ${year}년 ${month}월 ${day}일 (${calTypeStr})</span>
-                        <span><strong style="color:#666;">태어난 시간:</strong> ${timeDisp}</span>
-                        <span><strong style="color:#666;">일주 기준:</strong> ${zishiStr}</span>
+                <div style="text-align: left; background: #fcfdfc; padding: 18px 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 25px;">
+                    <div style="font-size: 1.15rem; font-weight: 700; color: var(--accent-color); margin-bottom: 12px;">
+                        ${nameDisp} <span style="font-size: 0.95rem; color: var(--text-color); font-weight: 600;">${genderText}</span>
+                    </div>
+                    
+                    <div style="font-size: 0.95rem; color: #333; margin-bottom: 5px; line-height: 1.5;">
+                        <strong style="color:var(--accent-color);">${displayInputStr}</strong> <span style="color:#888;">/ ${timeDisp}</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: #666; margin-bottom: 12px; line-height: 1.5; padding-bottom: 12px; border-bottom: 1px solid #eee;">
+                        ${displayConvertedStr} 
+                    </div>
+
+                    <div style="font-size: 0.85rem; color: #555;">
+                        <strong style="color:#777;">일주 기준:</strong> ${zishiStr}
                     </div>
                 </div>
             `;
@@ -815,7 +848,6 @@
             const startSolar = yun.getStartSolar();
             const startStr = `${startSolar.getYear()}년 ${startSolar.getMonth()}월 ${startSolar.getDay()}일`;
             
-            // ✨ 교운일 정확한 날짜 객체 보존 (대운 산출용)
             globalGyounDate = new Date(startSolar.getYear(), startSolar.getMonth() - 1, startSolar.getDay());
             
             globalExactBaseAge = yun.getStartYear() + (yun.getStartMonth() / 12) + (yun.getStartDay() / 365);
@@ -1014,7 +1046,6 @@
 
         let currentDaYun = "--";
         
-        // ✨ 오늘의 사주 대운: 교운일 기준으로 정확히 렌더링되도록 수정
         if (globalGyounDate) {
             let currentIndex = 0;
             for (let i = 1; i <= 10; i++) {
@@ -1122,7 +1153,6 @@
         let currentIndex = 0;
         let currentDaYunGanZhi = "--";
         
-        // ✨ 묘운력 확인: 교운일 기준 대운/월주 산출 로직 
         if (globalGyounDate) {
             for (let i = 1; i <= 10; i++) {
                 let dyStartDate = new Date(globalGyounDate);
